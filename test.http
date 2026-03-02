@@ -1,0 +1,13 @@
+POST http://localhost:8080/matches
+Content-Type: application/json
+
+{
+  "playerId": "niklas409",
+  "champion": "Ahri",
+  "win": true,
+  "kills": 10,
+  "deaths": 2,
+  "assists": 6,
+  "playedAt": "2026-03-01T21:30:00"
+}
+
