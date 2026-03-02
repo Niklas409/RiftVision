@@ -1,5 +1,6 @@
 package ch.niklas409.riftvision.controller;
 
+import ch.niklas409.riftvision.dto.ApiResponse;
 import ch.niklas409.riftvision.dto.PlayerStatsResponse;
 import ch.niklas409.riftvision.service.MatchService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,8 @@ public class PlayerController {
     }
 
     @GetMapping("/{playerId}/stats")
-    public PlayerStatsResponse getStats(@PathVariable String playerId) {
-        return matchService.calculateStats(playerId);
+    public ApiResponse<PlayerStatsResponse> getStats(@PathVariable String playerId) {
+        return new ApiResponse<>("OK", matchService.calculateStats(playerId));
     }
 
 }

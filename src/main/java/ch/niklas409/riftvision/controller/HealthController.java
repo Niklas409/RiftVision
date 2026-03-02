@@ -1,5 +1,6 @@
 package ch.niklas409.riftvision.controller;
 
+import ch.niklas409.riftvision.dto.ApiResponse;
 import ch.niklas409.riftvision.dto.HealthResponse;
 import ch.niklas409.riftvision.service.HealthService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class HealthController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public HealthResponse getHealth() {
-        return healthService.getHealth();
+    public ApiResponse<HealthResponse> getHealth() {
+        return new ApiResponse<>("OK", healthService.getHealth());
     }
 }

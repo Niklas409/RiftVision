@@ -1,6 +1,7 @@
 package ch.niklas409.riftvision.service;
 
 import ch.niklas409.riftvision.dto.PlayerStatsResponse;
+import ch.niklas409.riftvision.exception.ResourceNotFoundException;
 import ch.niklas409.riftvision.model.Match;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class MatchService {
 
     public PlayerStatsResponse calculateStats(String playerId) {
         int matches = (int) countMatches(playerId);
+        if(matches == 0) {
+            throw new ResourceNotFoundException("No matches found for playerId: " + playerId);
+        }
         int wins = (int) countWins(playerId);
         int losses = matches - wins;
         int kills = sumKills(playerId);

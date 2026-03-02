@@ -1,7 +1,9 @@
 package ch.niklas409.riftvision.controller;
 
+import ch.niklas409.riftvision.dto.ApiResponse;
 import ch.niklas409.riftvision.dto.MatchRequest;
 import ch.niklas409.riftvision.dto.PlayerStatsResponse;
+import ch.niklas409.riftvision.mapper.MatchMapper;
 import ch.niklas409.riftvision.model.Match;
 import ch.niklas409.riftvision.service.MatchService;
 import jakarta.validation.Valid;
@@ -15,29 +17,23 @@ import java.util.List;
 public class MatchController {
 
     private final MatchService matchService;
+    private final MatchMapper matchMapper;
 
-    public MatchController(MatchService matchService) {
+    public MatchController(MatchService matchService, MatchMapper matchMapper) {
         this.matchService = matchService;
+        this.matchMapper = matchMapper;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createMatch(@Valid @RequestBody MatchRequest request) {
-        Match match = new Match(
-                request.getPlayerId(),
-                request.getChampion(),
-                request.getWin(),
-                request.getKills(),
-                request.getDeaths(),
-                request.getAssists(),
-                request.getPlayedAt()
-        );
-        matchService.addMatch(match);
+    public ApiResponse<Void> createMatch(@Valid @RequestBody MatchRequest request) {
+        matchService.addMatch(matchMapper.toModel(request));
+        return new ApiResponse<>("Match created", null);
     }
 
     @GetMapping
-    public List<Match> getAllMatches() {
-        return matchService.getAllMatches();
+    public ApiResponse<List<Match>> getAllMatches() {
+        return new ApiResponse<>("OK", matchService.getAllMatches());
     }
 
 }
