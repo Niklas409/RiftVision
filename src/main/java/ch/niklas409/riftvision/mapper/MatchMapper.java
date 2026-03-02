@@ -1,22 +1,14 @@
 package ch.niklas409.riftvision.mapper;
 
-import ch.niklas409.riftvision.dto.MatchRequest;
-import ch.niklas409.riftvision.model.Match;
+import ch.niklas409.riftvision.dto.MatchResponse;
+import ch.niklas409.riftvision.model.entity.MatchEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MatchMapper {
 
-    public Match toModel(MatchRequest request) {
-        return new Match(
-                request.getPlayerId(),
-                request.getChampion(),
-                request.getWin(),
-                request.getKills(),
-                request.getDeaths(),
-                request.getAssists(),
-                request.getPlayedAt()
-        );
+    public MatchResponse toResponse(MatchEntity entity) {
+        return new MatchResponse(entity.getId(), entity.getPlayer().getPlayerId(), entity.getChampion(), entity.isWin(), entity.getKills(), entity.getDeaths(), entity.getAssists(), entity.getPlayedAt());
     }
 
 }

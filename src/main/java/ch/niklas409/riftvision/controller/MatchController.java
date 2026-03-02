@@ -2,9 +2,8 @@ package ch.niklas409.riftvision.controller;
 
 import ch.niklas409.riftvision.dto.ApiResponse;
 import ch.niklas409.riftvision.dto.MatchRequest;
-import ch.niklas409.riftvision.dto.PlayerStatsResponse;
-import ch.niklas409.riftvision.mapper.MatchMapper;
-import ch.niklas409.riftvision.model.Match;
+import ch.niklas409.riftvision.dto.MatchResponse;
+import ch.niklas409.riftvision.model.entity.MatchEntity;
 import ch.niklas409.riftvision.service.MatchService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,23 +16,20 @@ import java.util.List;
 public class MatchController {
 
     private final MatchService matchService;
-    private final MatchMapper matchMapper;
 
-    public MatchController(MatchService matchService, MatchMapper matchMapper) {
+    public MatchController(MatchService matchService) {
         this.matchService = matchService;
-        this.matchMapper = matchMapper;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<Void> createMatch(@Valid @RequestBody MatchRequest request) {
-        matchService.addMatch(matchMapper.toModel(request));
-        return new ApiResponse<>("Match created", null);
+    public ApiResponse<MatchResponse> createMatch(@Valid @RequestBody MatchRequest request) {
+        return ApiResponse.success(matchService.createMatch(request));
     }
 
     @GetMapping
-    public ApiResponse<List<Match>> getAllMatches() {
-        return new ApiResponse<>("OK", matchService.getAllMatches());
+    public ApiResponse<List<MatchResponse>> getAllMatches() {
+        return ApiResponse.success(matchService.getAllMatches());
     }
 
 }

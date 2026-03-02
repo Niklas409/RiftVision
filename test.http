@@ -1,12 +1,81 @@
+### Health
+GET http://localhost:8080/health
+
+
+### Create Player (unique playerId!)
+POST http://localhost:8080/players
+Content-Type: application/json
+
+{
+  "playerId": "player-001",
+  "name": "Niklas",
+  "region": "EUW"
+}
+
+
+### Create Match for player-001
 POST http://localhost:8080/matches
 Content-Type: application/json
 
 {
-  "playerId": "niklas409",
+  "playerId": "player-001",
   "champion": "Ahri",
   "win": true,
   "kills": 10,
   "deaths": 2,
   "assists": 6,
-  "playedAt": "2026-03-01T21:30:00"
+  "playedAt": "2026-03-01T21:30:00Z"
+}
+
+
+### Create another Match for player-001
+POST http://localhost:8080/matches
+Content-Type: application/json
+
+{
+  "playerId": "player-001",
+  "champion": "Vayne",
+  "win": true,
+  "kills": 12,
+  "deaths": 1,
+  "assists": 3,
+  "playedAt": "2026-03-01T22:15:00Z"
+}
+
+
+### Get all matches
+GET http://localhost:8080/matches
+
+
+### Get stats for player-001
+GET http://localhost:8080/players/player-001/stats
+
+
+### Error case: stats for non-existing player
+GET http://localhost:8080/players/does-not-exist/stats
+
+
+### Error case: create match with non-existing player
+POST http://localhost:8080/matches
+Content-Type: application/json
+
+{
+  "playerId": "does-not-exist",
+  "champion": "Darius",
+  "win": false,
+  "kills": 2,
+  "deaths": 10,
+  "assists": 1,
+  "playedAt": "2026-03-01T23:00:00Z"
+}
+
+
+### Error case: validation (missing fields)
+POST http://localhost:8080/players
+Content-Type: application/json
+
+{
+  "riotPuuid": "",
+  "name": "",
+  "region": ""
 }

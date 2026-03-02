@@ -1,6 +1,7 @@
 package ch.niklas409.riftvision.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiErrorResponse handleGeneric(Exception exception, HttpServletRequest request) {
         return new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Unexpected error", List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.CONFLICT.value(), "Resource already exists", List.of(), request.getRequestURI());
     }
 
 }

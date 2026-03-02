@@ -1,5 +1,6 @@
 package ch.niklas409.riftvision.dto;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Min;
@@ -24,9 +25,9 @@ public class MatchRequest {
     @Min(0)
     private Integer assists;
     @NotNull
-    private LocalDateTime playedAt;
+    private Instant playedAt;
 
-    public MatchRequest(String playerId, String champion, Boolean win, Integer kills, Integer deaths, Integer assists, LocalDateTime playedAt) {
+    public MatchRequest(String playerId, String champion, Boolean win, Integer kills, Integer deaths, Integer assists, Instant playedAt) {
         this.playerId = playerId;
         this.champion = champion;
         this.win = win;
@@ -44,7 +45,7 @@ public class MatchRequest {
         return champion;
     }
 
-    public Boolean getWin() {
+    public Boolean isWin() {
         return win;
     }
 
@@ -60,7 +61,7 @@ public class MatchRequest {
         return assists;
     }
 
-    public LocalDateTime getPlayedAt() {
+    public Instant getPlayedAt() {
         return playedAt;
     }
 }

@@ -1,3 +1,10 @@
 spring:
-  application:
-    name: RiftVision
+  datasource:
+    url: jdbc:postgresql://localhost:5432/riftvision
+    username: riftvision
+    password: riftvision
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false

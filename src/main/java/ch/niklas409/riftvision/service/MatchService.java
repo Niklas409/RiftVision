@@ -1,58 +1,56 @@
 package ch.niklas409.riftvision.service;
 
+import ch.niklas409.riftvision.dto.MatchRequest;
+import ch.niklas409.riftvision.dto.MatchResponse;
 import ch.niklas409.riftvision.dto.PlayerStatsResponse;
 import ch.niklas409.riftvision.exception.ResourceNotFoundException;
-import ch.niklas409.riftvision.model.Match;
+import ch.niklas409.riftvision.mapper.MatchMapper;
+import ch.niklas409.riftvision.model.entity.MatchEntity;
+import ch.niklas409.riftvision.model.entity.PlayerEntity;
+import ch.niklas409.riftvision.repository.MatchRepository;
+import ch.niklas409.riftvision.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class MatchService {
 
-    private final List<Match> matches = new ArrayList<>();
+    private final PlayerRepository playerRepository;
+    private final MatchRepository matchRepository;
+    private final MatchMapper matchMapper;
 
-    public void addMatch(Match match) {
-        matches.add(match);
+    public MatchService(PlayerRepository playerRepository, MatchRepository matchRepository, MatchMapper matchMapper) {
+        this.playerRepository = playerRepository;
+        this.matchRepository = matchRepository;
+        this.matchMapper = matchMapper;
     }
 
-    public List<Match> getAllMatches() {
-        return List.copyOf(matches);
+    public MatchResponse createMatch(MatchRequest request) {
+        PlayerEntity player = playerRepository.findByPlayerId(request.getPlayerId()).orElseThrow(() -> new ResourceNotFoundException("Player not found"));
+        MatchEntity match = new MatchEntity(player, request.getChampion(), request.isWin(), request.getKills(), request.getDeaths(), request.getAssists(), request.getPlayedAt());
+        return matchMapper.toResponse(matchRepository.save(match));
+    }
+
+    public List<MatchResponse> getAllMatches() {
+        return matchRepository.findAll().stream().map(matchMapper::toResponse).toList();
     }
 
     public PlayerStatsResponse calculateStats(String playerId) {
-        int matches = (int) countMatches(playerId);
-        if(matches == 0) {
+        PlayerEntity player = playerRepository.findByPlayerId(playerId).orElseThrow(() -> new ResourceNotFoundException("Player not found"));
+        List<MatchEntity> matches = matchRepository.findByPlayer(player);
+        if(matches.isEmpty()) {
             throw new ResourceNotFoundException("No matches found for playerId: " + playerId);
         }
-        int wins = (int) countWins(playerId);
-        int losses = matches - wins;
-        int kills = sumKills(playerId);
-        int deaths = sumDeaths(playerId);
-        int assists = sumAssists(playerId);
-        double kda = (kills + assists) / (double) Math.max(1, deaths);
-        return new PlayerStatsResponse(playerId, matches, wins, losses, kills, deaths, assists, kda);
-    }
-
-    public long countMatches(String playerId) {
-        return matches.stream().filter(match -> match.getPlayerId().equals(playerId)).count();
-    }
-
-    public long countWins(String playerId) {
-        return matches.stream().filter(match -> match.getPlayerId().equals(playerId)).filter(Match::isWin).count();
-    }
-
-    public int sumKills(String playerId) {
-        return matches.stream().filter(match -> match.getPlayerId().equals(playerId)).mapToInt(Match::getKills).sum();
-    }
-
-    public int sumDeaths(String playerId) {
-        return matches.stream().filter(match -> match.getPlayerId().equals(playerId)).mapToInt(Match::getDeaths).sum();
-    }
-
-    public int sumAssists(String playerId) {
-        return matches.stream().filter(match -> match.getPlayerId().equals(playerId)).mapToInt(Match::getAssists).sum();
+        int matchCount = matches.size();
+        int wins = (int) matches.stream().filter(MatchEntity::isWin).count();
+        int losses = matchCount - wins;
+        int kills = matches.stream().mapToInt(MatchEntity::getKills).sum();
+        int deaths = matches.stream().mapToInt(MatchEntity::getDeaths).sum();
+        int assists = matches.stream().mapToInt(MatchEntity::getAssists).sum();
+        double rawKda = (kills + assists) / (double) Math.max(1, deaths);
+        double kda = Math.round(rawKda * 100.0) / 100.0;
+        return new PlayerStatsResponse(playerId, matchCount, wins, losses, kills, deaths, assists, kda);
     }
 
 }

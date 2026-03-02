@@ -22,6 +22,6 @@ public class HealthController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<HealthResponse> getHealth() {
-        return new ApiResponse<>("OK", healthService.getHealth());
+        return ApiResponse.success(healthService.getHealth());
     }
 }

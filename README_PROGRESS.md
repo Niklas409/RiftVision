@@ -6,18 +6,28 @@
 
 * Phase 0 – Foundation ✅
 * Phase 1 – REST MVP (In-Memory) ✅
-* Phase 2 – Database (PostgreSQL + JPA) ⏳
+* Phase 2 – Database (PostgreSQL + JPA) ✅
 * Phase 3 – Clean Architecture & API Standards ✅
 * Phase 4 – Security (JWT) ⏳
-* Phase 5 – Riot API ⏳
+* Phase 5 – Riot API Integration ⏳
 * Phase 6 – Coach Layer ⏳
 * Phase 7 – Production ⏳
 
 ---
 
-## 🚀 Aktuelle Phase
+## 🚀 Aktueller Stand
 
-**Phase 2 – Database Integration (PostgreSQL + JPA)**
+Backend ist vollständig funktionsfähig mit:
+
+- Persistenter PostgreSQL-Datenbank (Docker)
+- JPA Entities & Relation (Player ↔ Match)
+- Saubere DTO-Trennung (Request / Response)
+- Mapper Pattern (Entity → DTO)
+- Global Exception Handling
+- 409 Conflict Handling bei Duplicate
+- Konsistente API-Naming-Strategie (`playerId`)
+- Gerundete KDA-Berechnung
+- Einheitliche ApiResponse-Hülle
 
 ---
 
@@ -27,169 +37,112 @@
 
 ## Phase 0 – Foundation
 
-* Clean Package-Struktur erstellt
-* Root-Package lowercase refactored
-* GET `/health` implementiert
-* HealthResponse DTO erstellt
-* HealthService implementiert
-* Constructor Injection verwendet
-* Gradle clean build als Fix bei Build-Problemen verstanden
+* Clean Package-Struktur
+* GET `/health`
+* Constructor Injection
+* Gradle Build Verständnis
 
 ---
 
-## Phase 1 – REST MVP (In-Memory)
+## Phase 1 – REST MVP
 
-### Domain & DTO
-
-* Match Domain definiert
-* MatchRequest DTO mit Validation erstellt
-* PlayerStatsResponse DTO erstellt
-
-### Endpoints
-
-* POST `/matches`
-* GET `/matches`
-* GET `/players/{playerId}/stats`
-* Controller sauber getrennt (Match / Player)
-
-### Business Logic
-
-* Matches nach playerId gefiltert
-* Wins gezählt
-* Losses berechnet (`matches - wins`)
-* Kills / Deaths / Assists summiert
-* KDA korrekt berechnet
-* Division-by-zero abgesichert
-
-### Streams gelernt
-
-* `stream()`
-* `filter()`
-* `mapToInt()`
-* `sum()`
-* `count()`
-* Pipeline-Denken verstanden
-
-### Qualität & Defensive Programming
-
-* Unterschied zwischen `long` und `int` verstanden
-* Double-Division korrekt angewendet
-* Validation getestet (400 Bad Request)
-* Defensive Copy mit `List.copyOf()` implementiert
-* Service kapselt internen State sauber
+* Match Domain
+* In-Memory Speicherung
+* Stats Aggregation mit Streams
+* Defensive Programming
+* Validation
+* Service-Layer eingeführt
 
 ---
 
-## Phase 3 – Clean Architecture & API Standards
+## Phase 2 – Database Layer
 
-### Architektur-Verbesserung
+* PostgreSQL via Docker Compose
+* `PlayerEntity`
+    - unique `playerId`
+* `MatchEntity`
+    - ManyToOne Relation zu Player
+* JPA Repository Pattern
+* Persistente Speicherung
+* DB-basierte Stats-Berechnung
+* Hibernate Lifecycle verstanden
+* DB Reset via Docker Volumes
 
-* Mapper Pattern eingeführt
-* Controller dünn gehalten
-* Business Logic ausschließlich im Service
+---
 
-### Global Exception Handling
+## Phase 3 – Clean Architecture
 
-* `FieldErrorResponse` DTO erstellt
-* `ApiErrorResponse` DTO erstellt
-* `ResourceNotFoundException` implementiert
-* `GlobalExceptionHandler` implementiert
-
-Abgedeckte Fälle:
-
-* 400 – Validation Errors
-* 404 – Resource Not Found
-* 500 – Generic Exception Fallback
-
-Error Response enthält:
-
-* status
-* message
-* errors[]
-* path
-
-### API Response Standardisierung
-
-* Generisches `ApiResponse<T>` eingeführt
-* Einheitliche Success Response Struktur
-* Alle GET & POST Endpoints angepasst
+* Entities werden **nicht** direkt exposed
+* Einführung von:
+    - `PlayerRequest`
+    - `PlayerResponse`
+    - `MatchRequest`
+    - `MatchResponse`
+    - `PlayerStatsResponse`
+* `PlayerMapper`
+* `MatchMapper`
+* Controller nur DTO-basierte Kommunikation
+* GlobalExceptionHandler erweitert:
+    - 400 Validation
+    - 404 ResourceNotFound
+    - 409 DataIntegrityViolation
+    - 500 Fallback
+* Konsistente API-Namensgebung (`playerId`)
+* KDA sauber auf 2 Nachkommastellen gerundet
 
 ---
 
 ## 🏗 Aktuelle Architektur
+* controller
+* dto
+* exception
+* mapper
+* model.entity
+* repository
+* service
+* config
 
-### controller
 
-* HealthController
-* MatchController
-* PlayerController
+Layer-Struktur:
 
-### service
-
-* HealthService
-* MatchService
-
-### mapper
-
-* MatchMapper
-
-### dto
-
-* HealthResponse
-* MatchRequest
-* PlayerStatsResponse
-* ApiResponse
-
-### model
-
-* Match
-
-### exception
-
-* ApiErrorResponse
-* FieldErrorResponse
-* ResourceNotFoundException
-* GlobalExceptionHandler
-
-### repository
-
-* (kommt in Phase 2)
-
-### config
-
-* (noch leer)
+Controller → DTO → Service → Entity → Repository → DB
 
 ---
 
 ## 🧠 Wichtige Learnings
 
-* REST-Flow: Controller → Mapper → Service → DTO
-* Constructor Injection statt Field Injection
-* Streams als Daten-Pipeline denken
-* Business-Logik gehört in den Service, nicht in den Controller
-* Defensive Programming (`List.copyOf`, Edge Cases absichern)
-* Generics verstehen (`ApiResponse<T>`)
-* Einheitliche API-Struktur designen
-* Professionelles Global Exception Handling implementieren
+* Unterschied Entity vs DTO
+* Warum Entities nicht direkt exposed werden
+* Warum 409 statt 500 bei Duplicate
+* Relation Modeling mit JPA
+* ManyToOne korrekt verstehen
+* Hibernate ddl-auto Verhalten
+* Docker Compose für DB
+* Streams für Aggregation
+* API Konsistenz & Naming Disziplin
+* Clean Layered Architecture
 
 ---
 
-## 🎯 Entscheidungen
+## 🎯 Nächster Fokus
 
-* Start ohne DB ✅
-* Fokus auf REST Fundamentals ✅
-* Business-Logik früh implementiert ✅
-* Streams früh gelernt ✅
-* Saubere Layered Architecture von Anfang an ✅
+Phase 4 – Security Layer:
+
+* User Entity
+* Passwort-Hashing
+* JWT Auth
+* Rollen (USER / ADMIN / COACH)
+* Endpoint Protection
 
 ---
 
-## ⏭ Next – Phase 2 (Database)
+## 📊 Projekt-Level
 
-* [ ] PostgreSQL via Docker Compose starten
-* [ ] application.yml konfigurieren
-* [ ] Match als JPA Entity modellieren
-* [ ] JpaRepository erstellen
-* [ ] In-Memory List entfernen
-* [ ] Persistente Speicherung testen
-* [ ] Stats weiterhin korrekt aus DB berechnen
+Status: Solides Junior-Level Backend Fundament
+
+System ist:
+- Stabil
+- Persistierend
+- Architektonisch sauber
+- API-konsistent
+- Docker-fähig
