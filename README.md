@@ -7,7 +7,6 @@ RiftVision ist ein langfristiges Backend-Projekt zum systematischen Aufbau von B
 REST → Business Logic → Validation → Datenbank → Clean Architecture → Security → Production Readiness.
 
 Das Projekt dient gleichzeitig als:
-
 - Lernprojekt
 - Architekturtraining
 - Portfolio-Projekt
@@ -15,28 +14,28 @@ Das Projekt dient gleichzeitig als:
 
 ---
 
-# 🚀 Aktueller Stand
+## 🚀 Aktueller Stand
 
 RiftVision ist aktuell ein funktionierendes Spring Boot Backend mit:
 
 - REST API für Player, Matches und Stats
 - PostgreSQL Persistenz via Docker
 - JPA Entities + Repository Layer
-- sauberer DTO-Trennung (Request / Response)
+- Saubere DTO-Trennung (Request / Response)
 - Mapper Pattern
 - Global Exception Handling
-- konsistenter ApiResponse-Hülle
+- Konsistente ApiResponse-Hülle
 - Spring Security mit JWT Authentication
 - Passwort-Hashing mit BCrypt
-- geschützten Endpoints via JWT Filter
-- konsistenten 401 Unauthorized Responses
+- Geschützte Endpoints via JWT Filter
+- Konsistente 401 Unauthorized Responses
 
 ---
 
-# 🛠 Tech Stack
+## 🛠 Tech Stack
 
 - Java 21
-- Spring Boot 4.0.3
+- Spring Boot 4
 - Gradle
 - PostgreSQL
 - Spring Data JPA
@@ -47,56 +46,20 @@ RiftVision ist aktuell ein funktionierendes Spring Boot Backend mit:
 
 ---
 
-# 📦 Features
+## 🌐 API Endpoints
 
-## Core Backend
-
-- Health Check Endpoint
-- Player anlegen
-- Matches speichern
-- Matches abrufen
-- Player Stats berechnen
-
-## Architektur
-
-- Layered Architecture
-- DTO Request / Response Trennung
-- Mapper Pattern
-- Global Exception Handling
-- ApiResponse Standardisierung
-
-## Datenbank
-
-- PostgreSQL Persistenz
-- JPA Entity Mapping
-- ManyToOne Relation zwischen Match und Player
-
-## Security
-
-- User Registration
-- User Login
-- Passwort-Hashing mit BCrypt
-- JWT Token Generierung
-- JWT Token Validierung
-- geschützte Endpoints
-- Custom 401 Unauthorized JSON Response
-
----
-
-# 🌐 API Endpoints
-
-## Public Endpoints
+### Public Endpoints
 
 GET /health
 
-POST /auth/register
+POST /auth/register  
 POST /auth/login
 
-## Protected Endpoints
+### Protected Endpoints
 
-POST /players
-POST /matches
-GET /matches
+POST /players  
+POST /matches  
+GET /matches  
 GET /players/{playerId}/stats
 
 Authorization Header:
@@ -105,9 +68,45 @@ Authorization: Bearer <token>
 
 ---
 
-# ▶️ How to Run (local)
+## 🔐 Authentication Flow
 
-Docker starten:
+### Register
+
+```json
+{
+  "email": "niklas@test.com",
+  "password": "123456"
+}
+```
+
+Passwort wird mit BCrypt gehasht und der User gespeichert.
+
+### Login
+
+```json
+{
+  "email": "niklas@test.com",
+  "password": "123456"
+}
+```
+
+Response:
+
+```json
+{
+  "message": "Success",
+  "data": {
+    "message": "Login successful",
+    "token": "JWT_TOKEN"
+  }
+}
+```
+
+---
+
+## ▶️ How to Run (local)
+
+PostgreSQL starten:
 
 docker compose up -d
 
@@ -122,3 +121,48 @@ Windows:
 Server läuft auf:
 
 http://localhost:8080
+
+---
+
+## 🏗 Projektstruktur
+
+src/main/java/ch/niklas409/riftvision
+
+config  
+controller  
+domain/entity  
+dto/request  
+dto/response  
+exception  
+mapper  
+repository  
+security  
+service
+
+Layer-Struktur:
+
+Controller → DTO → Service → Entity → Repository → DB
+
+Security Flow:
+
+Request → JWT Filter → UserDetailsService → SecurityContext → Controller
+
+---
+
+## 📌 Roadmap
+
+Phase 0 – Foundation ✅  
+Phase 1 – REST MVP ✅  
+Phase 2 – Database ✅  
+Phase 3 – Clean Architecture ✅  
+Phase 4 – Security (JWT) ✅  
+Phase 5 – Riot API Integration ⏳  
+Phase 6 – Coach Layer ⏳  
+Phase 7 – Production ⏳
+
+---
+
+## 🎯 Ziel
+
+Ein produktionsnahes Backend-Projekt mit realistischen Architekturentscheidungen und Security,
+das Schritt für Schritt Richtung Enterprise-Level erweitert wird.

@@ -101,35 +101,21 @@ Backend ist vollständig funktionsfähig mit:
 
 * `UserEntity` eingeführt
 * `Role` Enum (`USER`, `ADMIN`, `COACH`)
-* `UserRepository` mit:
-  - `findByEmail(...)`
-  - `existsByEmail(...)`
-* Register Endpoint
-  - `POST /auth/register`
-* Login Endpoint
-  - `POST /auth/login`
-* Passwort-Hashing mit `BCryptPasswordEncoder`
-* `JwtService` implementiert
-  - `generateToken(...)`
-  - `extractEmail(...)`
-  - `isTokenValid(...)`
-* `CustomUserDetailsService` implementiert
-* `JwtAuthenticationFilter` implementiert
-* `SecurityConfig` mit:
-  - offenen Endpoints (`/auth/**`, `/health`)
-  - geschützten Endpoints (`authenticated`)
-  - `SessionCreationPolicy.STATELESS`
-  - JWT Filter Integration
-* `InvalidCredentialsException`
-* Custom `AuthenticationEntryPoint`
-* Konsistente 401 Unauthorized Responses
-* Authentifizierte Requests mit:
-
-Authorization: Bearer <token>
+* `UserRepository`
+* Register Endpoint `/auth/register`
+* Login Endpoint `/auth/login`
+* Passwort-Hashing mit BCrypt
+* `JwtService`
+* `JwtAuthenticationFilter`
+* `CustomUserDetailsService`
+* `SecurityConfig` mit geschützten Endpoints
+* Stateless Authentication mit JWT
+* Custom 401 Unauthorized Response
 
 ---
 
 ## 🏗 Aktuelle Architektur
+
 * controller
 * dto
 * exception
@@ -150,42 +136,14 @@ Request → JWT Filter → UserDetailsService → SecurityContext → Controller
 
 ---
 
-## 🧠 Wichtige Learnings
-
-* Unterschied Entity vs DTO
-* Warum Entities nicht direkt exposed werden
-* Warum 409 statt 500 bei Duplicate
-* Relation Modeling mit JPA
-* ManyToOne korrekt verstehen
-* Hibernate ddl-auto Verhalten
-* Docker Compose für DB
-* Streams für Aggregation
-* API Konsistenz & Naming Disziplin
-* Clean Layered Architecture
-* Passwort-Hashing mit BCrypt
-* Unterschied zwischen Hashing und Verschlüsselung
-* JWT Aufbau (Header, Payload, Signature)
-* JWT Flow:
-  - Token erzeugen
-  - Token senden
-  - Token lesen
-  - Token validieren
-* Spring Security `UserDetailsService`
-* Rolle von `SecurityContextHolder`
-* Unterschied zwischen öffentlichen und geschützten Endpoints
-* Stateless Authentication mit JWT
-
----
-
 ## 🎯 Nächster Fokus
 
-Phase 5 – Riot API Integration:
+Phase 5 – Riot API Integration
 
-* Riot API Client vorbereiten
-* Import Endpoint definieren
-* Externe API Fehler behandeln
-* Erste echte Match-Daten importieren
-* Über Rate Limits und Caching nachdenken
+- Riot API Client bauen
+- Import Endpoint definieren
+- Externe API Fehler behandeln
+- Erste echte Match-Daten importieren
 
 ---
 
