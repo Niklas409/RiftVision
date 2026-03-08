@@ -40,7 +40,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiErrorResponse handleDataIntegrityViolation(DataIntegrityViolationException exception, HttpServletRequest request) {
-        return new ApiErrorResponse(HttpStatus.CONFLICT.value(), "Resource already exists", List.of(), request.getRequestURI());
+        return new ApiErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiErrorResponse handleInvalidCredentials(InvalidCredentialsException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.UNAUTHORIZED.value(), exception.getMessage(), List.of(), request.getRequestURI());
     }
 
 }

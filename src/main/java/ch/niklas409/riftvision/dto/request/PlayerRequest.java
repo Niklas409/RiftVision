@@ -1,35 +1,22 @@
-package ch.niklas409.riftvision.model.entity;
+package ch.niklas409.riftvision.dto.request;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "players")
-public class PlayerEntity {
+public class PlayerRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "player_id", unique = true, nullable = false)
+    @NotBlank
     private String playerId;
 
-    @Column(nullable = false)
+    @NotBlank
     private String name;
 
-    @Column(nullable = false)
+    @NotBlank
     private String region;
 
-    protected PlayerEntity() {
-    }
-
-    public PlayerEntity(String playerId, String name, String region) {
+    public PlayerRequest(String playerId, String name, String region) {
         this.playerId = playerId;
         this.name = name;
         this.region = region;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getPlayerId() {
@@ -42,10 +29,6 @@ public class PlayerEntity {
 
     public String getRegion() {
         return region;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public void setPlayerId(String playerId) {

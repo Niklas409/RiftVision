@@ -1,7 +1,7 @@
 package ch.niklas409.riftvision.mapper;
 
-import ch.niklas409.riftvision.dto.PlayerResponse;
-import ch.niklas409.riftvision.model.entity.PlayerEntity;
+import ch.niklas409.riftvision.dto.response.PlayerResponse;
+import ch.niklas409.riftvision.domain.entity.PlayerEntity;
 import org.springframework.stereotype.Component;
 
 @Component

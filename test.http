@@ -1,24 +1,148 @@
-### Health
-GET http://localhost:8080/health
+@baseUrl = http://localhost:8080
+@playerId = player-001
+@email = niklas@test.com
+@password = 123456
+@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtsYXNAdGVzdC5jb20iLCJpYXQiOjE3NzI5ODcyODcsImV4cCI6MTc3Mjk5MDg4N30.9sWWQx00dOC868ojOeyMrNcGh6YXPV5trftqLJm1jQQ
+
+### ========================================
+### HEALTH
+### ========================================
+
+### Health check
+GET {{baseUrl}}/health
 
 
-### Create Player (unique playerId!)
-POST http://localhost:8080/players
+### ========================================
+### AUTH - REGISTER
+### ========================================
+
+### Register user
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-  "playerId": "player-001",
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Register - duplicate email
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Register - invalid email
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "not-an-email",
+  "password": "123456"
+}
+
+### Register - blank password
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "newuser@test.com",
+  "password": ""
+}
+
+### Register - blank email
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": "123456"
+}
+
+
+### ========================================
+### AUTH - LOGIN
+### ========================================
+
+### Login success
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Login - wrong password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "wrongpassword"
+}
+
+### Login - user does not exist
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "doesnotexist@test.com",
+  "password": "123456"
+}
+
+
+### ========================================
+### PROTECTED ENDPOINTS - WITHOUT TOKEN
+### ========================================
+
+### Get all matches without token -> should be 401
+GET {{baseUrl}}/matches
+
+### Get player stats without token -> should be 401
+GET {{baseUrl}}/players/{{playerId}}/stats
+
+
+### ========================================
+### PLAYER
+### ========================================
+
+### Create player
+POST {{baseUrl}}/players
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "playerId": "{{playerId}}",
   "name": "Niklas",
   "region": "EUW"
 }
 
-
-### Create Match for player-001
-POST http://localhost:8080/matches
+### Create player - validation error
+POST {{baseUrl}}/players
 Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 {
-  "playerId": "player-001",
+  "playerId": "",
+  "name": "",
+  "region": ""
+}
+
+
+### ========================================
+### MATCHES
+### ========================================
+
+### Create first match
+POST {{baseUrl}}/matches
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+{
+  "playerId": "{{playerId}}",
   "champion": "Ahri",
   "win": true,
   "kills": 10,
@@ -27,13 +151,13 @@ Content-Type: application/json
   "playedAt": "2026-03-01T21:30:00Z"
 }
 
-
-### Create another Match for player-001
-POST http://localhost:8080/matches
+### Create second match
+POST {{baseUrl}}/matches
 Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 {
-  "playerId": "player-001",
+  "playerId": "{{playerId}}",
   "champion": "Vayne",
   "win": true,
   "kills": 12,
@@ -42,22 +166,10 @@ Content-Type: application/json
   "playedAt": "2026-03-01T22:15:00Z"
 }
 
-
-### Get all matches
-GET http://localhost:8080/matches
-
-
-### Get stats for player-001
-GET http://localhost:8080/players/player-001/stats
-
-
-### Error case: stats for non-existing player
-GET http://localhost:8080/players/does-not-exist/stats
-
-
-### Error case: create match with non-existing player
-POST http://localhost:8080/matches
+### Create match - non-existing player
+POST {{baseUrl}}/matches
 Content-Type: application/json
+Authorization: Bearer {{jwt}}
 
 {
   "playerId": "does-not-exist",
@@ -70,12 +182,18 @@ Content-Type: application/json
 }
 
 
-### Error case: validation (missing fields)
-POST http://localhost:8080/players
-Content-Type: application/json
+### ========================================
+### QUERIES
+### ========================================
 
-{
-  "riotPuuid": "",
-  "name": "",
-  "region": ""
-}
+### Get all matches
+GET {{baseUrl}}/matches
+Authorization: Bearer {{jwt}}
+
+### Get stats for existing player
+GET {{baseUrl}}/players/{{playerId}}/stats
+Authorization: Bearer {{jwt}}
+
+### Get stats for non-existing player
+GET {{baseUrl}}/players/does-not-exist/stats
+Authorization: Bearer {{jwt}}

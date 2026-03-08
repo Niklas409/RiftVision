@@ -2,205 +2,123 @@
 
 Coach-first Analytics & Player Development Backend für League of Legends.
 
-RiftVision ist ein Backend-Projekt zum systematischen Aufbau von Backend-Kompetenz:
-REST → Business Logic → Validation → Datenbank → Security → Production.
+RiftVision ist ein langfristiges Backend-Projekt zum systematischen Aufbau von Backend-Kompetenz:
+
+REST → Business Logic → Validation → Datenbank → Clean Architecture → Security → Production Readiness.
+
+Das Projekt dient gleichzeitig als:
+
+- Lernprojekt
+- Architekturtraining
+- Portfolio-Projekt
+- Vorbereitung auf eine Backend-Stelle
 
 ---
 
-## 🚀 Aktueller Stand
+# 🚀 Aktueller Stand
 
-- REST API mit Spring Boot
-- In-Memory Match Speicherung
-- Player Stats Berechnung (Wins, Losses, KDA)
-- Input Validation (@NotBlank, @NotNull, @Min)
-- Saubere Layered Architecture (Controller → Service → DTO → Model)
-- Stream-basierte Aggregation (filter, mapToInt, sum, count)
+RiftVision ist aktuell ein funktionierendes Spring Boot Backend mit:
 
-Nächster Schritt:
-- PostgreSQL + JPA Integration
-- Persistente Speicherung
+- REST API für Player, Matches und Stats
+- PostgreSQL Persistenz via Docker
+- JPA Entities + Repository Layer
+- sauberer DTO-Trennung (Request / Response)
+- Mapper Pattern
 - Global Exception Handling
-- Security Layer (JWT)
+- konsistenter ApiResponse-Hülle
+- Spring Security mit JWT Authentication
+- Passwort-Hashing mit BCrypt
+- geschützten Endpoints via JWT Filter
+- konsistenten 401 Unauthorized Responses
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Tech Stack
 
 - Java 21
 - Spring Boot 4.0.3
 - Gradle
-- In-Memory Storage (aktuell)
-- (coming) PostgreSQL + JPA
-- (coming) Spring Security (JWT)
+- PostgreSQL
+- Spring Data JPA
+- Spring Security
+- JWT
+- Docker / Docker Compose
+- Embedded Tomcat
 
 ---
 
-## 📦 Features (aktueller Stand)
+# 📦 Features
+
+## Core Backend
 
 - Health Check Endpoint
-- Matches speichern & abrufen
-- Player Stats berechnen:
-    - Matches
-    - Wins
-    - Losses
-    - Kills
-    - Deaths
-    - Assists
-    - KDA
-- Input Validation mit automatischem 400 Bad Request
+- Player anlegen
+- Matches speichern
+- Matches abrufen
+- Player Stats berechnen
+
+## Architektur
+
+- Layered Architecture
+- DTO Request / Response Trennung
+- Mapper Pattern
+- Global Exception Handling
+- ApiResponse Standardisierung
+
+## Datenbank
+
+- PostgreSQL Persistenz
+- JPA Entity Mapping
+- ManyToOne Relation zwischen Match und Player
+
+## Security
+
+- User Registration
+- User Login
+- Passwort-Hashing mit BCrypt
+- JWT Token Generierung
+- JWT Token Validierung
+- geschützte Endpoints
+- Custom 401 Unauthorized JSON Response
 
 ---
 
-## 🌐 API Endpoints
+# 🌐 API Endpoints
 
-### Health
+## Public Endpoints
 
-GET `/health`
+GET /health
 
-Beispiel-Response:
+POST /auth/register
+POST /auth/login
 
-```json
-{
-"status": "UP",
-"service": "RiftVision",
-"timestamp": "2026-03-01T20:49:47.2967509"
-}
-```
----
+## Protected Endpoints
 
-### Matches
+POST /players
+POST /matches
+GET /matches
+GET /players/{playerId}/stats
 
-POST `/matches`
+Authorization Header:
 
-Beispiel-Request:
-
-```json
-{
-"playerId": "niklas409",
-"champion": "Ahri",
-"win": true,
-"kills": 10,
-"deaths": 2,
-"assists": 6,
-"playedAt": "2026-03-01T21:30:00"
-}
-```
-
-GET `/matches`
-
-Gibt alle gespeicherten Matches zurück.
+Authorization: Bearer <token>
 
 ---
 
-### Player Stats
+# ▶️ How to Run (local)
 
-GET `/players/{playerId}/stats`
+Docker starten:
 
-Beispiel:
-GET `/players/niklas409/stats`
+docker compose up -d
 
-Beispiel-Response:
-
-```json
-{
-"playerId": "niklas409",
-"matches": 1,
-"wins": 1,
-"losses": 0,
-"kills": 10,
-"deaths": 2,
-"assists": 6,
-"kda": 8.0
-}
-```
-
-KDA Formel:
-
-kda = (kills + assists) / max(1, deaths)
-
-Division-by-zero wird abgesichert.
-
----
-
-## ▶️ How to Run (local)
-
-1. Repository klonen
-2. Projekt öffnen (z. B. IntelliJ)
-3. `RiftVisionApplication` starten
-
-Oder via CLI:
+App starten:
 
 ./gradlew bootRun
 
-Server läuft standardmäßig auf:
+Windows:
+
+.\gradlew.bat bootRun
+
+Server läuft auf:
 
 http://localhost:8080
-
----
-
-## 🧪 Testing
-
-Empfohlen:
-
-- IntelliJ HTTP Client (.http Datei)
-- Postman
-- curl
-
----
-
-## 🏗 Projektstruktur
-
-controller/
-- HealthController
-- MatchController
-- PlayerController
-
-service/
-- HealthService
-- MatchService
-
-dto/
-- HealthResponse
-- MatchRequest
-- PlayerStatsResponse
-
-model/
-- Match
-
----
-
-## 🧠 Wichtige Learnings
-
-- REST Architektur mit klarer Layer-Trennung
-- Constructor Injection
-- Business Logic gehört in den Service
-- Stream Pipeline:
-    - filter()
-    - mapToInt()
-    - sum()
-    - count()
-- long vs int Unterschied
-- Double-Division korrekt anwenden
-- Defensive Programming (List.copyOf)
-- Validation mit @Valid
-
----
-
-## 📌 Roadmap
-
-Phase 0 – Foundation ✅  
-Phase 1 – REST MVP (In-Memory) ✅  
-Phase 2 – Database (PostgreSQL + JPA) ⏳  
-Phase 3 – Clean Architecture ⏳  
-Phase 4 – Security ⏳  
-Phase 5 – Riot API ⏳  
-Phase 6 – Coach Layer ⏳  
-Phase 7 – Production ⏳
-
----
-
-## 🎯 Ziel
-
-Ein produktionsnahes, sauberes Backend-Projekt,
-das reale Architektur-Entscheidungen abbildet
-und schrittweise Richtung Enterprise-Level ausgebaut wird.

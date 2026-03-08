@@ -1,12 +1,12 @@
 package ch.niklas409.riftvision.service;
 
-import ch.niklas409.riftvision.dto.MatchRequest;
-import ch.niklas409.riftvision.dto.MatchResponse;
-import ch.niklas409.riftvision.dto.PlayerStatsResponse;
+import ch.niklas409.riftvision.dto.request.MatchRequest;
+import ch.niklas409.riftvision.dto.response.MatchResponse;
+import ch.niklas409.riftvision.dto.response.PlayerStatsResponse;
 import ch.niklas409.riftvision.exception.ResourceNotFoundException;
 import ch.niklas409.riftvision.mapper.MatchMapper;
-import ch.niklas409.riftvision.model.entity.MatchEntity;
-import ch.niklas409.riftvision.model.entity.PlayerEntity;
+import ch.niklas409.riftvision.domain.entity.MatchEntity;
+import ch.niklas409.riftvision.domain.entity.PlayerEntity;
 import ch.niklas409.riftvision.repository.MatchRepository;
 import ch.niklas409.riftvision.repository.PlayerRepository;
 import org.springframework.stereotype.Service;

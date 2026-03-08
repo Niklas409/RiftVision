@@ -1,6 +1,6 @@
 package ch.niklas409.riftvision.repository;
 
-import ch.niklas409.riftvision.model.entity.PlayerEntity;
+import ch.niklas409.riftvision.domain.entity.PlayerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

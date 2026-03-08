@@ -1,6 +1,6 @@
 package ch.niklas409.riftvision.service;
 
-import ch.niklas409.riftvision.dto.HealthResponse;
+import ch.niklas409.riftvision.dto.response.HealthResponse;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 

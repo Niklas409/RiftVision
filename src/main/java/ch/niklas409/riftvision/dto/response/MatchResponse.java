@@ -1,44 +1,21 @@
-package ch.niklas409.riftvision.model.entity;
-
-import jakarta.persistence.*;
+package ch.niklas409.riftvision.dto.response;
 
 import java.time.Instant;
 
-@Entity
-@Table(name = "matches")
-public class MatchEntity {
+public class MatchResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(optional=false)
-    @JoinColumn(name="player_id", nullable=false)
-    private PlayerEntity player;
-
-    @Column(nullable=false)
+    private String playerId;
     private String champion;
-
-    @Column(nullable=false)
     private boolean win;
-
-    @Column(nullable=false)
     private int kills;
-
-    @Column(nullable=false)
     private int deaths;
-
-    @Column(nullable=false)
     private int assists;
-
-    @Column(nullable=false)
     private Instant playedAt;
 
-    protected MatchEntity() {
-    }
-
-    public MatchEntity(PlayerEntity player, String champion, boolean win, int kills, int deaths, int assists, Instant playedAt) {
-        this.player = player;
+    public MatchResponse(Long id, String playerId, String champion, boolean win, int kills, int deaths, int assists, Instant playedAt) {
+        this.id = id;
+        this.playerId = playerId;
         this.champion = champion;
         this.win = win;
         this.kills = kills;
@@ -51,8 +28,8 @@ public class MatchEntity {
         return id;
     }
 
-    public PlayerEntity getPlayer() {
-        return player;
+    public String getPlayerId() {
+        return playerId;
     }
 
     public String getChampion() {
@@ -83,8 +60,8 @@ public class MatchEntity {
         this.id = id;
     }
 
-    public void setPlayer(PlayerEntity player) {
-        this.player = player;
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
     public void setChampion(String champion) {

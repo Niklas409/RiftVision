@@ -1,7 +1,7 @@
 package ch.niklas409.riftvision.mapper;
 
-import ch.niklas409.riftvision.dto.MatchResponse;
-import ch.niklas409.riftvision.model.entity.MatchEntity;
+import ch.niklas409.riftvision.dto.response.MatchResponse;
+import ch.niklas409.riftvision.domain.entity.MatchEntity;
 import org.springframework.stereotype.Component;
 
 @Component

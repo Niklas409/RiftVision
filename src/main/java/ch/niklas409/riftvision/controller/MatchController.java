@@ -1,9 +1,8 @@
 package ch.niklas409.riftvision.controller;
 
 import ch.niklas409.riftvision.dto.ApiResponse;
-import ch.niklas409.riftvision.dto.MatchRequest;
-import ch.niklas409.riftvision.dto.MatchResponse;
-import ch.niklas409.riftvision.model.entity.MatchEntity;
+import ch.niklas409.riftvision.dto.request.MatchRequest;
+import ch.niklas409.riftvision.dto.response.MatchResponse;
 import ch.niklas409.riftvision.service.MatchService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

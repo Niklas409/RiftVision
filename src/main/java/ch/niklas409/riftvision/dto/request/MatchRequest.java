@@ -1,7 +1,6 @@
-package ch.niklas409.riftvision.dto;
+package ch.niklas409.riftvision.dto.request;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

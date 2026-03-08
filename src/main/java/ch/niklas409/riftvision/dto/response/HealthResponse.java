@@ -1,4 +1,4 @@
-package ch.niklas409.riftvision.dto;
+package ch.niklas409.riftvision.dto.response;
 
 import java.time.LocalDateTime;
 
