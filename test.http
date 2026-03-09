@@ -197,3 +197,22 @@ Authorization: Bearer {{jwt}}
 ### Get stats for non-existing player
 GET {{baseUrl}}/players/does-not-exist/stats
 Authorization: Bearer {{jwt}}
+
+### ========================================
+### RIOT IMPORT / INTERNAL
+### ========================================
+
+### Riot account lookup
+GET {{baseUrl}}/internal/riot/Niklas409/0409
+
+### Riot recent match ids
+GET {{baseUrl}}/internal/riot/matches/Niklas409/0409
+
+### Riot recent stats
+GET {{baseUrl}}/internal/riot/recent-stats/Niklas409/0409
+
+### Riot import recent matches
+POST {{baseUrl}}/internal/riot/import/Niklas409/0409
+
+### Riot import recent matches with count
+POST {{baseUrl}}/internal/riot/import/Niklas409/0409?count=3

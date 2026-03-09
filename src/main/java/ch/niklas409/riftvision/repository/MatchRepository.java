@@ -9,5 +9,6 @@ import java.util.List;
 public interface MatchRepository extends JpaRepository<MatchEntity, Long> {
 
     List<MatchEntity> findByPlayer(PlayerEntity player);
+    boolean existsByMatchId(String matchId);
 
 }

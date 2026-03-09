@@ -1,0 +1,59 @@
+package ch.niklas409.riftvision.dto.riot.response;
+
+public class RiotParticipantResponse {
+
+    private String puuid;
+    private String championName;
+    private int kills;
+    private int deaths;
+    private int assists;
+    private boolean win;
+
+    public String getPuuid() {
+        return puuid;
+    }
+
+    public String getChampionName() {
+        return championName;
+    }
+
+    public int getKills() {
+        return kills;
+    }
+
+    public int getDeaths() {
+        return deaths;
+    }
+
+    public int getAssists() {
+        return assists;
+    }
+
+    public boolean isWin() {
+        return win;
+    }
+
+    public void setPuuid(String puuid) {
+        this.puuid = puuid;
+    }
+
+    public void setChampionName(String championName) {
+        this.championName = championName;
+    }
+
+    public void setKills(int kills) {
+        this.kills = kills;
+    }
+
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
+    }
+
+    public void setAssists(int assists) {
+        this.assists = assists;
+    }
+
+    public void setWin(boolean win) {
+        this.win = win;
+    }
+}

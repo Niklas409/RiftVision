@@ -42,13 +42,12 @@ Job-ready Backend Developer werden durch:
 - Spring Boot 4.0.3
 - Gradle
 - Embedded Tomcat
-
-Später:
 - PostgreSQL
 - Spring Data JPA
 - Spring Security
 - JWT
 - Docker
+- Riot Games API
 
 ---
 
@@ -164,14 +163,23 @@ Lernfokus:
 Ziel:
 Echte Match-Daten importieren.
 
-Feature:
-- POST /import/{playerName}
+Features:
+- Riot API Key via Environment Variable
+- Riot Account Lookup (`gameName` + `tagLine`)
+- Match-ID Lookup via PUUID
+- Match-Detail Lookup
+- Extraktion spielerbezogener Match-Stats
+- Internal Riot Endpoints für Lookup und Recent Stats
+- Persistenter Import in PostgreSQL
+- Import Response mit `imported` / `skipped`
 
 Lernfokus:
 - API Client Design
-- Rate Limiting
-- Fehlerbehandlung externer APIs
-- Caching Thinking
+- DTO Mapping externer APIs
+- Service-Orchestrierung
+- Externe API → internes DTO → Entity Mapping
+- Duplicate Handling
+- Persistenter Import
 
 ---
 
@@ -195,6 +203,23 @@ Task
 CoachClientRelation
 - coachId
 - playerId
+
+---
+
+## Phase 6.5 – Match Model Refactor
+
+Ziel:
+Vom aktuellen player-zentrierten MVP-Modell auf ein fachlich sauberes Match-Modell wechseln.
+
+Geplantes Zielmodell:
+- `MatchEntity` als globales Match
+- `MatchParticipantEntity` als Join-/Teilnahme-Entity
+- `matchId` global unique auf Match-Ebene
+- Eindeutigkeit pro `(match, player)` auf Participant-Ebene
+
+Warum später?
+- aktueller MVP-Fokus liegt auf funktionierendem Riot-Import und Coach-MVP
+- vollständiger Refactor lohnt sich nach Phase 6 deutlich mehr
 
 ---
 
@@ -225,13 +250,24 @@ Industrieniveau erreichen.
 
 # 6. Architektur-Layout
 
-Geplante Package-Struktur:
+Aktuelle Package-Struktur:
 
+```text
 riftvision
-├── controller
-├── service
-├── model
-├── dto
-├── repository
+├── client/riot
 ├── config
+├── controller
+├── domain/entity
+├── dto/request
+├── dto/response
+├── dto/riot/response
 ├── exception
+├── mapper
+├── repository
+├── security
+└── service
+```
+
+Aktuelle Layer-Struktur:
+
+Controller → Service → Client / Entity → Repository → DB / External API

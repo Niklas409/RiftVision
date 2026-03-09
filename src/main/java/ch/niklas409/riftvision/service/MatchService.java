@@ -25,10 +25,13 @@ public class MatchService {
         this.matchRepository = matchRepository;
         this.matchMapper = matchMapper;
     }
-
+    // LEGACY (Phase 1/2):
+    // Manueller Match-Create aus dem ursprünglichen lokalen MVP.
+    // Wird aktuell nicht mehr aktiv genutzt.
+    // Neue Matches werden über RiotImportService importiert.
     public MatchResponse createMatch(MatchRequest request) {
         PlayerEntity player = playerRepository.findByPlayerId(request.getPlayerId()).orElseThrow(() -> new ResourceNotFoundException("Player not found"));
-        MatchEntity match = new MatchEntity(player, request.getChampion(), request.isWin(), request.getKills(), request.getDeaths(), request.getAssists(), request.getPlayedAt());
+        MatchEntity match = new MatchEntity(null, player, request.getChampion(), request.getKills(), request.getDeaths(), request.getAssists(), request.isWin(), request.getPlayedAt());
         return matchMapper.toResponse(matchRepository.save(match));
     }
 

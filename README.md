@@ -4,7 +4,7 @@ Coach-first Analytics & Player Development Backend für League of Legends.
 
 RiftVision ist ein langfristiges Backend-Projekt zum systematischen Aufbau von Backend-Kompetenz:
 
-REST → Business Logic → Validation → Datenbank → Clean Architecture → Security → Production Readiness.
+REST → Business Logic → Validation → Datenbank → Clean Architecture → Security → API Integration → Production Readiness.
 
 Das Projekt dient gleichzeitig als:
 - Lernprojekt
@@ -29,6 +29,12 @@ RiftVision ist aktuell ein funktionierendes Spring Boot Backend mit:
 - Passwort-Hashing mit BCrypt
 - Geschützte Endpoints via JWT Filter
 - Konsistente 401 Unauthorized Responses
+- Riot API Integration über separaten Client-Layer
+- Riot Account Lookup (`gameName` + `tagLine` → `puuid`)
+- Match-ID Lookup und Match-Detail Lookup über Riot Match V5
+- Eigenes internes Stats-DTO für letzte Match-Stats
+- Import-Pipeline von Riot → DTO → Entity → PostgreSQL
+- Import Response mit `imported` / `skipped`
 
 ---
 
@@ -43,6 +49,7 @@ RiftVision ist aktuell ein funktionierendes Spring Boot Backend mit:
 - JWT
 - Docker / Docker Compose
 - Embedded Tomcat
+- Riot Games API
 
 ---
 
@@ -65,6 +72,13 @@ GET /players/{playerId}/stats
 Authorization Header:
 
 Authorization: Bearer <token>
+
+### Internal Riot Endpoints
+
+GET /internal/riot/{gameName}/{tagLine}  
+GET /internal/riot/matches/{gameName}/{tagLine}  
+GET /internal/riot/recent-stats/{gameName}/{tagLine}  
+POST /internal/riot/import/{gameName}/{tagLine}?count=5
 
 ---
 
@@ -104,19 +118,61 @@ Response:
 
 ---
 
+## 🌍 Riot Import Flow
+
+```text
+Riot ID + TagLine
+        ↓
+Account API
+        ↓
+PUUID
+        ↓
+Match IDs
+        ↓
+Match Details
+        ↓
+Participant per PUUID finden
+        ↓
+Eigenes Stats-DTO bauen
+        ↓
+MatchEntity speichern
+        ↓
+PostgreSQL
+```
+
+Import Response Beispiel:
+
+```json
+{
+  "message": "Success",
+  "data": {
+    "imported": 2,
+    "skipped": 3
+  }
+}
+```
+
+---
+
 ## ▶️ How to Run (local)
 
 PostgreSQL starten:
 
+```bash
 docker compose up -d
+```
 
 App starten:
 
+```bash
 ./gradlew bootRun
+```
 
 Windows:
 
+```bash
 .\gradlew.bat bootRun
+```
 
 Server läuft auf:
 
@@ -130,9 +186,11 @@ src/main/java/ch/niklas409/riftvision
 
 config  
 controller  
+client/riot  
 domain/entity  
 dto/request  
 dto/response  
+dto/riot/response  
 exception  
 mapper  
 repository  
@@ -141,7 +199,7 @@ service
 
 Layer-Struktur:
 
-Controller → DTO → Service → Entity → Repository → DB
+Controller → DTO / API Request → Service → Client / Entity → Repository → DB / External API
 
 Security Flow:
 
@@ -156,13 +214,14 @@ Phase 1 – REST MVP ✅
 Phase 2 – Database ✅  
 Phase 3 – Clean Architecture ✅  
 Phase 4 – Security (JWT) ✅  
-Phase 5 – Riot API Integration ⏳  
+Phase 5 – Riot API Integration ✅  
 Phase 6 – Coach Layer ⏳  
+Phase 6.5 – Match Model Refactor ⏳  
 Phase 7 – Production ⏳
 
 ---
 
 ## 🎯 Ziel
 
-Ein produktionsnahes Backend-Projekt mit realistischen Architekturentscheidungen und Security,
+Ein produktionsnahes Backend-Projekt mit realistischen Architekturentscheidungen, Security und echter externer API-Integration,
 das Schritt für Schritt Richtung Enterprise-Level erweitert wird.

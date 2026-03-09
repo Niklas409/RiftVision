@@ -12,3 +12,8 @@ spring:
 jwt:
   secret: 01234567890123456789012345678901
   expiration: 3600000
+
+riot:
+  api-key: ${RIOT_API_KEY}
+  account-base-url: https://europe.api.riotgames.com
+  match-base-url: https://europe.api.riotgames.com

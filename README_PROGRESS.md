@@ -9,8 +9,9 @@
 * Phase 2 – Database (PostgreSQL + JPA) ✅
 * Phase 3 – Clean Architecture & API Standards ✅
 * Phase 4 – Security (JWT) ✅
-* Phase 5 – Riot API Integration ⏳
+* Phase 5 – Riot API Integration ✅
 * Phase 6 – Coach Layer ⏳
+* Phase 6.5 – Match Model Refactor ⏳
 * Phase 7 – Production ⏳
 
 ---
@@ -33,6 +34,17 @@ Backend ist vollständig funktionsfähig mit:
 - Register / Login Flow
 - Geschützte Endpoints mit JWT
 - Konsistente 401 Unauthorized Responses
+- Riot API Client mit separatem `client/riot` Package
+- Riot DTOs sauber getrennt unter `dto/riot/response`
+- Riot Account Lookup (`gameName` + `tagLine` → `puuid`)
+- Match-ID Lookup via PUUID
+- Match-Detail Lookup via Riot Match V5
+- Extraktion spielerbezogener Match-Stats
+- Eigenes internes DTO `PlayerMatchStatsResponse`
+- Recent Stats Endpoint für mehrere Riot-Matches
+- Persistenter Riot-Import in PostgreSQL
+- Import Response mit `imported` / `skipped`
+- Query Parameter `count` für flexiblen Import
 
 ---
 
@@ -114,13 +126,42 @@ Backend ist vollständig funktionsfähig mit:
 
 ---
 
+## Phase 5 – Riot API Integration
+
+* `RiotApiProperties` mit Environment Variable für API Key
+* `RiotApiClient` in separatem `client/riot` Package
+* Riot Account Endpoint angebunden
+* Riot Match IDs Endpoint angebunden
+* Riot Match Detail Endpoint angebunden
+* DTO-Mapping für Riot Account Response
+* DTO-Mapping für Riot Match Response (`metadata`, `info`, `participants`)
+* `RiotImportService` als Orchestrierungs-Layer eingeführt
+* Interne Riot Endpoints:
+  - `/internal/riot/{gameName}/{tagLine}`
+  - `/internal/riot/matches/{gameName}/{tagLine}`
+  - `/internal/riot/recent-stats/{gameName}/{tagLine}`
+  - `/internal/riot/import/{gameName}/{tagLine}?count=...`
+* Participant-Findung per `puuid` über Streams
+* Eigenes internes Stats-DTO `PlayerMatchStatsResponse`
+* `matchId` in `MatchEntity` ergänzt
+* `existsByMatchId(...)` im `MatchRepository`
+* `getOrCreatePlayer(...)` für Riot-Import
+* Import einzelner Matches nur wenn noch nicht vorhanden
+* Import Response DTO `ImportMatchesResponse`
+* Query Parameter `count` für flexiblen Import
+* Matches erfolgreich in PostgreSQL importiert
+
+---
+
 ## 🏗 Aktuelle Architektur
 
+* client/riot
 * controller
 * dto
+* dto/riot/response
 * exception
 * mapper
-* model.entity
+* domain/entity
 * repository
 * service
 * config
@@ -128,7 +169,7 @@ Backend ist vollständig funktionsfähig mit:
 
 Layer-Struktur:
 
-Controller → DTO → Service → Entity → Repository → DB
+Controller → Service → Client / Entity → Repository → DB / External API
 
 Security Flow:
 
@@ -138,18 +179,18 @@ Request → JWT Filter → UserDetailsService → SecurityContext → Controller
 
 ## 🎯 Nächster Fokus
 
-Phase 5 – Riot API Integration
+Phase 6 – Coach Layer
 
-- Riot API Client bauen
-- Import Endpoint definieren
-- Externe API Fehler behandeln
-- Erste echte Match-Daten importieren
+Geplante nächste Features:
+- Notes pro Match
+- Tasks pro Spieler
+- Coach ↔ Player Relation
 
 ---
 
 ## 📊 Projekt-Level
 
-Status: Starkes Junior-Level Backend Fundament
+Status: Starkes Junior-Level Backend Fundament mit echter externer API-Integration
 
 System ist:
 - Stabil
@@ -159,3 +200,20 @@ System ist:
 - JWT-gesichert
 - Docker-fähig
 - Portfolio-tauglich
+- Mit echter Import-Pipeline aus einer externen API
+
+---
+
+## Geplanter Refactor
+
+- `MatchEntity` ist aktuell player-zentriert (1 Datensatz = 1 Spieler in 1 Match)
+- Duplicate-Check läuft aktuell nur über `matchId`
+- Später refactoren auf Eindeutigkeit pro `(player, matchId)` oder vollständiges `Match + MatchParticipant` Modell
+- Geplanter Zeitpunkt: nach dem ersten Coach-MVP als eigene Phase 6.5
+
+---
+
+## Legacy-Hinweis
+
+- Der alte manuelle Match-Create-Pfad aus dem ursprünglichen lokalen MVP bleibt aktuell als Legacy-Code bestehen
+- Neuer Hauptpfad für echte Match-Daten ist der Riot-Import über `RiotImportService`
