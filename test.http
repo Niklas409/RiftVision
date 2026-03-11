@@ -2,7 +2,18 @@
 @playerId = player-001
 @email = niklas@test.com
 @password = 123456
-@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtsYXNAdGVzdC5jb20iLCJpYXQiOjE3NzI5ODcyODcsImV4cCI6MTc3Mjk5MDg4N30.9sWWQx00dOC868ojOeyMrNcGh6YXPV5trftqLJm1jQQ
+@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwiaWF0IjoxNzczMjU5MTA0LCJleHAiOjE3NzMyNjI3MDR9.qrElo96q5x4ENggY9ASaEroMVWCduxhHS-ImkQ-SRhk
+
+@coachEmail = coach@test.com
+@coachPassword = 123456
+@coachJwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjb2FjaEB0ZXN0LmNvbSIsImlhdCI6MTc3MzI2MzAzNCwiZXhwIjoxNzczMjY2NjM0fQ.6pabpGYx5KJxowqVKA5sHXhmS5wBnxyShu_D-sfwadA
+
+@studentEmail = student@test.com
+@studentPassword = 123456
+@studentJwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwiaWF0IjoxNzczMjYzMDU3LCJleHAiOjE3NzMyNjY2NTd9.m5iL6026j8CJkzw6s5nsUB8f3Mi5AI1Jwct0c1IPjdM
+@studentId = 4
+
+@matchId = EUW1_7675782164
 
 ### ========================================
 ### HEALTH
@@ -216,3 +227,129 @@ POST {{baseUrl}}/internal/riot/import/Niklas409/0409
 
 ### Riot import recent matches with count
 POST {{baseUrl}}/internal/riot/import/Niklas409/0409?count=3
+
+### ========================================
+### COACH RELATION
+### ========================================
+
+### Register coach test user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{coachEmail}}",
+  "password": "{{coachPassword}}"
+}
+
+### Register student test user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{studentEmail}}",
+  "password": "{{studentPassword}}"
+}
+
+### Login coach
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{coachEmail}}",
+  "password": "{{coachPassword}}"
+}
+
+### Login student
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{studentEmail}}",
+  "password": "{{studentPassword}}"
+}
+
+### Assign student to coach -> should be 200/201 with COACH token
+POST {{baseUrl}}/coach/students/{{studentId}}
+Authorization: Bearer {{coachJwt}}
+
+### Assign same student again -> should fail because relation already exists
+POST {{baseUrl}}/coach/students/{{studentId}}
+Authorization: Bearer {{coachJwt}}
+
+### Assign student with normal USER token -> should be 403
+POST {{baseUrl}}/coach/students/{{studentId}}
+Authorization: Bearer {{studentJwt}}
+
+### Assign non-existing student -> should be 404
+POST {{baseUrl}}/coach/students/999999
+Authorization: Bearer {{coachJwt}}
+
+### Coach assigns himself as student -> should fail
+POST {{baseUrl}}/coach/students/3
+Authorization: Bearer {{coachJwt}}
+
+### ========================================
+### COACH - STUDENTS
+### ========================================
+
+### Get students for coach -> should return list of assigned students
+GET {{baseUrl}}/coach/students
+Authorization: Bearer {{coachJwt}}
+
+### Get students for coach -> should return empty list if no students assigned
+GET {{baseUrl}}/coach/students
+Authorization: Bearer {{coachJwt}}
+
+### Get students without token -> should be 401
+GET {{baseUrl}}/coach/students
+
+### Get students with normal USER token -> should be 403
+GET {{baseUrl}}/coach/students
+Authorization: Bearer {{studentJwt}}
+
+### ========================================
+### COACH - REMOVE STUDENT
+### ========================================
+
+### Remove assigned student from coach -> should succeed
+DELETE {{baseUrl}}/coach/students/{{studentId}}
+Authorization: Bearer {{coachJwt}}
+
+### Remove same student again -> should be 404 because relation no longer exists
+DELETE {{baseUrl}}/coach/students/{{studentId}}
+Authorization: Bearer {{coachJwt}}
+
+### Remove student without token -> should be 401
+DELETE {{baseUrl}}/coach/students/{{studentId}}
+
+### Remove student with normal USER token -> should be 403
+DELETE {{baseUrl}}/coach/students/{{studentId}}
+Authorization: Bearer {{studentJwt}}
+
+### Remove non-existing student -> should be 404
+DELETE {{baseUrl}}/coach/students/999999
+Authorization: Bearer {{coachJwt}}
+
+### ========================================
+### MATCH NOTES
+### ========================================
+
+### Create note for match
+POST {{baseUrl}}/coach/matches/{{matchId}}/notes
+Authorization: Bearer {{coachJwt}}
+Content-Type: application/json
+
+{
+  "studentId": {{studentId}},
+  "content": "Wave zu früh gepusht – Jungle Gank möglich."
+}
+
+### Create note with USER token -> should be 403
+POST {{baseUrl}}/coach/matches/{{matchId}}/notes
+Authorization: Bearer {{studentJwt}}
+Content-Type: application/json
+
+{
+  "studentId": {{studentId}},
+  "content": "Test"
+}

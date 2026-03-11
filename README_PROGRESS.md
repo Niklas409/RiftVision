@@ -217,3 +217,126 @@ System ist:
 
 - Der alte manuelle Match-Create-Pfad aus dem ursprünglichen lokalen MVP bleibt aktuell als Legacy-Code bestehen
 - Neuer Hauptpfad für echte Match-Daten ist der Riot-Import über `RiotImportService`
+
+
+---
+
+# 🚧 Phase 6 – Coach Layer (in Progress)
+
+Der Coach Layer erweitert RiftVision um echte Coaching-Funktionalität für Spielerentwicklung.
+
+Ziel:
+Spieler können einem Coach zugeordnet werden und Coaches können Matches ihrer Spieler analysieren und kommentieren.
+
+---
+
+## Coach ↔ Student Relation
+
+Neue Domain:
+`CoachClientRelationEntity`
+
+Datenbankstruktur:
+
+coach_client_relations
+
+- id
+- coach_id
+- student_id
+- created_at
+
+Features:
+
+- Coach kann Studenten zuweisen
+- Studenten eines Coaches abrufen
+- Studenten von Coach entfernen
+- Duplicate Relations werden verhindert
+- Self‑Coaching wird verhindert
+
+Endpoints:
+
+POST `/coach/students/{studentId}`  
+→ Student einem Coach zuweisen
+
+GET `/coach/students`  
+→ Alle Studenten eines Coaches anzeigen
+
+DELETE `/coach/students/{studentId}`  
+→ Student von Coach entfernen
+
+Business Rules:
+
+- Coach muss Rolle `COACH` oder `ADMIN` besitzen
+- Student muss Rolle `USER` besitzen
+- Coach darf sich nicht selbst zuweisen
+- Relation darf nur einmal existieren
+
+---
+
+## Match Notes (Coaching Kontext)
+
+Coaches können Notizen zu Matches ihrer Studenten erstellen.
+
+Wichtig:  
+Notes gehören **nicht global zum Match**, sondern zu einem Coaching‑Kontext:
+
+Coach → Student → Match
+
+### Domain Modell
+
+`NoteEntity`
+
+Attribute:
+
+- id
+- coach (UserEntity)
+- student (UserEntity)
+- matchId
+- content
+- createdAt
+
+Damit können mehrere Coaches oder Spieler dasselbe Match im System haben, ohne dass Notes kollidieren.
+
+---
+
+### Create Note
+
+Endpoint:
+
+POST `/coach/matches/{matchId}/notes`
+
+Request:
+
+{
+"studentId": 4,
+"content": "Wave zu früh gepusht – Jungle Gank möglich."
+}
+
+Response Beispiel:
+
+{
+"id": 1,
+"matchId": "EUW1_7675782164",
+"content": "...",
+"coachEmail": "...",
+"studentEmail": "...",
+"createdAt": "..."
+}
+
+Business Logic:
+
+- Coach wird über JWT identifiziert
+- Coach Rolle muss `COACH` oder `ADMIN` sein
+- Student muss existieren
+- Coach ↔ Student Relation muss existieren
+- Match muss existieren
+- Note wird gespeichert
+
+---
+
+## Nächste geplante Features (Phase 6)
+
+- GET Notes für ein Match
+- Update Note
+- Delete Note
+- Player Tasks / Trainingsaufgaben
+- Coach Dashboard Daten

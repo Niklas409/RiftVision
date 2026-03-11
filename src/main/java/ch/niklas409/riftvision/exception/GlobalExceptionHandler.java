@@ -3,6 +3,7 @@ package ch.niklas409.riftvision.exception;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +48,36 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ApiErrorResponse handleInvalidCredentials(InvalidCredentialsException exception, HttpServletRequest request) {
         return new ApiErrorResponse(HttpStatus.UNAUTHORIZED.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrorResponse handleAccessDeniedException(AccessDeniedException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.FORBIDDEN.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(RelationAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse handleRelationAlreadyExistsException(RelationAlreadyExistsException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(InvalidCoachRoleException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrorResponse handleInvalidCoachRoleException(InvalidCoachRoleException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.FORBIDDEN.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(SelfCoachingNotAllowedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleSelfCoachingNotAllowedException(SelfCoachingNotAllowedException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(CoachStudentRelationNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrorResponse handleSelfCoachingNotAllowedException(CoachStudentRelationNotFoundException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage(), List.of(), request.getRequestURI());
     }
 
 }
