@@ -10,7 +10,7 @@ spring:
     open-in-view: false
 
 jwt:
-  secret: 01234567890123456789012345678901
+  secret: ${JWT_SECRET}
   expiration: 3600000
 
 riot:

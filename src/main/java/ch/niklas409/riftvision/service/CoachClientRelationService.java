@@ -29,11 +29,11 @@ public class CoachClientRelationService {
     public void assignCoachToStudent(String coachEmail, Long studentId) {
         UserEntity coach = userRepository.findByEmail(coachEmail).orElseThrow(() -> new ResourceNotFoundException("Coach not found"));
         if (!(coach.getRole().equals(Role.COACH) || coach.getRole().equals(Role.ADMIN))) {
-            throw new InvalidCoachRoleException("Coach hasn't Coach Role");
+            throw new InvalidCoachRoleException("User does not have coach role");
         }
         UserEntity student = userRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         if(student.getRole().equals(Role.COACH) || student.getRole().equals(Role.ADMIN)) {
-            throw new InvalidCoachRoleException("Student hasn't User Role");
+            throw new InvalidStudentRoleException("User does not have student role");
         }
         if(coach.equals(student)) {
             throw new SelfCoachingNotAllowedException("Coach cannot assign himself as student");
@@ -59,7 +59,7 @@ public class CoachClientRelationService {
     public void removeStudentFromCoach(String coachEmail, Long studentId) {
         UserEntity coach = userRepository.findByEmail(coachEmail).orElseThrow(() -> new ResourceNotFoundException("Coach not found"));
         if (!(coach.getRole().equals(Role.COACH) || coach.getRole().equals(Role.ADMIN))) {
-            throw new InvalidCoachRoleException("Coach hasn't Coach Role");
+            throw new InvalidCoachRoleException("User does not have coach role");
         }
         UserEntity student = userRepository.findById(studentId).orElseThrow(() -> new ResourceNotFoundException("Student not found"));
         Optional<CoachClientRelationEntity> relationEntity = coachClientRelationRepository.findByCoachAndStudent(coach, student);

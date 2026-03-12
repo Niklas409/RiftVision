@@ -1,3 +1,4 @@
+
 # RiftVision – Progress
 
 ---
@@ -10,7 +11,7 @@
 * Phase 3 – Clean Architecture & API Standards ✅
 * Phase 4 – Security (JWT) ✅
 * Phase 5 – Riot API Integration ✅
-* Phase 6 – Coach Layer ⏳
+* Phase 6 – Coach Layer ✅
 * Phase 6.5 – Match Model Refactor ⏳
 * Phase 7 – Production ⏳
 
@@ -177,56 +178,12 @@ Request → JWT Filter → UserDetailsService → SecurityContext → Controller
 
 ---
 
-## 🎯 Nächster Fokus
-
-Phase 6 – Coach Layer
-
-Geplante nächste Features:
-- Notes pro Match
-- Tasks pro Spieler
-- Coach ↔ Player Relation
-
----
-
-## 📊 Projekt-Level
-
-Status: Starkes Junior-Level Backend Fundament mit echter externer API-Integration
-
-System ist:
-- Stabil
-- Persistierend
-- Architektonisch sauber
-- API-konsistent
-- JWT-gesichert
-- Docker-fähig
-- Portfolio-tauglich
-- Mit echter Import-Pipeline aus einer externen API
-
----
-
-## Geplanter Refactor
-
-- `MatchEntity` ist aktuell player-zentriert (1 Datensatz = 1 Spieler in 1 Match)
-- Duplicate-Check läuft aktuell nur über `matchId`
-- Später refactoren auf Eindeutigkeit pro `(player, matchId)` oder vollständiges `Match + MatchParticipant` Modell
-- Geplanter Zeitpunkt: nach dem ersten Coach-MVP als eigene Phase 6.5
-
----
-
-## Legacy-Hinweis
-
-- Der alte manuelle Match-Create-Pfad aus dem ursprünglichen lokalen MVP bleibt aktuell als Legacy-Code bestehen
-- Neuer Hauptpfad für echte Match-Daten ist der Riot-Import über `RiotImportService`
-
-
----
-
-# 🚧 Phase 6 – Coach Layer (in Progress)
+# 🚀 Phase 6 – Coach Layer (Completed)
 
 Der Coach Layer erweitert RiftVision um echte Coaching-Funktionalität für Spielerentwicklung.
 
 Ziel:
-Spieler können einem Coach zugeordnet werden und Coaches können Matches ihrer Spieler analysieren und kommentieren.
+Spieler können einem Coach zugeordnet werden und Coaches können Matches ihrer Spieler analysieren und Trainingsaufgaben vergeben.
 
 ---
 
@@ -234,15 +191,6 @@ Spieler können einem Coach zugeordnet werden und Coaches können Matches ihrer 
 
 Neue Domain:
 `CoachClientRelationEntity`
-
-Datenbankstruktur:
-
-coach_client_relations
-
-- id
-- coach_id
-- student_id
-- created_at
 
 Features:
 
@@ -255,20 +203,8 @@ Features:
 Endpoints:
 
 POST `/coach/students/{studentId}`  
-→ Student einem Coach zuweisen
-
 GET `/coach/students`  
-→ Alle Studenten eines Coaches anzeigen
-
-DELETE `/coach/students/{studentId}`  
-→ Student von Coach entfernen
-
-Business Rules:
-
-- Coach muss Rolle `COACH` oder `ADMIN` besitzen
-- Student muss Rolle `USER` besitzen
-- Coach darf sich nicht selbst zuweisen
-- Relation darf nur einmal existieren
+DELETE `/coach/students/{studentId}`
 
 ---
 
@@ -276,67 +212,84 @@ Business Rules:
 
 Coaches können Notizen zu Matches ihrer Studenten erstellen.
 
-Wichtig:  
-Notes gehören **nicht global zum Match**, sondern zu einem Coaching‑Kontext:
-
-Coach → Student → Match
-
-### Domain Modell
-
+Domain:
 `NoteEntity`
+
+Features:
+
+- Create Note
+- Get Notes für ein Match
+- Update Note
+- Delete Note
+- Ownership Checks (Coach darf nur eigene Notes bearbeiten)
+
+Endpoints:
+
+POST `/coach/matches/{matchId}/notes`  
+GET `/coach/matches/{matchId}/notes`  
+PUT `/coach/notes/{noteId}`  
+DELETE `/coach/notes/{noteId}`
+
+---
+
+## Player Tasks / Trainingsaufgaben
+
+Coaches können Trainingsaufgaben für Spieler erstellen.
+
+Domain:
+`TaskEntity`
 
 Attribute:
 
 - id
-- coach (UserEntity)
-- student (UserEntity)
-- matchId
-- content
+- coach
+- student
+- description
+- completed
 - createdAt
 
-Damit können mehrere Coaches oder Spieler dasselbe Match im System haben, ohne dass Notes kollidieren.
+Features:
+
+Coach:
+
+- Create Task
+- Update Task
+- Delete Task
+- Get Tasks for Student
+
+Student:
+
+- Complete Task
+- Uncomplete Task
+
+Endpoints:
+
+POST `/coach/students/{studentId}/tasks`  
+GET `/students/{studentId}/tasks`  
+PUT `/coach/tasks/{taskId}`  
+DELETE `/coach/tasks/{taskId}`  
+PATCH `/tasks/{taskId}/complete`  
+PATCH `/tasks/{taskId}/uncomplete`
 
 ---
 
-### Create Note
+## 🎯 Nächster Fokus
 
-Endpoint:
+Phase 6.5 – Match Model Refactor
 
-POST `/coach/matches/{matchId}/notes`
+Geplantes Ziel:
 
-Request:
-
-{
-"studentId": 4,
-"content": "Wave zu früh gepusht – Jungle Gank möglich."
-}
-
-Response Beispiel:
-
-{
-"id": 1,
-"matchId": "EUW1_7675782164",
-"content": "...",
-"coachEmail": "...",
-"studentEmail": "...",
-"createdAt": "..."
-}
-
-Business Logic:
-
-- Coach wird über JWT identifiziert
-- Coach Rolle muss `COACH` oder `ADMIN` sein
-- Student muss existieren
-- Coach ↔ Student Relation muss existieren
-- Match muss existieren
-- Note wird gespeichert
+- Einführung von `MatchParticipantEntity`
+- Trennung von Match und Player Stats
+- korrektes Domain-Modell für Multiplayer Matches
 
 ---
 
-## Nächste geplante Features (Phase 6)
+## 📊 Projekt-Level
 
-- GET Notes für ein Match
-- Update Note
-- Delete Note
-- Player Tasks / Trainingsaufgaben
-- Coach Dashboard Daten
+- echter externer API Integration
+- Security Layer (JWT)
+- Coaching Domain Modell
+- relationaler Datenbank
+- sauberen REST APIs
+- Docker Datenbank Setup

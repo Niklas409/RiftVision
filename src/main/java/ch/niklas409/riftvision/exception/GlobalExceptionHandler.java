@@ -68,6 +68,12 @@ public class GlobalExceptionHandler {
         return new ApiErrorResponse(HttpStatus.FORBIDDEN.value(), exception.getMessage(), List.of(), request.getRequestURI());
     }
 
+    @ExceptionHandler(InvalidStudentRoleException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrorResponse handleInvalidStudentRoleException(InvalidStudentRoleException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.FORBIDDEN.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
     @ExceptionHandler(SelfCoachingNotAllowedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrorResponse handleSelfCoachingNotAllowedException(SelfCoachingNotAllowedException exception, HttpServletRequest request) {
@@ -76,8 +82,32 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CoachStudentRelationNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse handleSelfCoachingNotAllowedException(CoachStudentRelationNotFoundException exception, HttpServletRequest request) {
+    public ApiErrorResponse handleCoachStudentRelationNotFoundException(CoachStudentRelationNotFoundException exception, HttpServletRequest request) {
         return new ApiErrorResponse(HttpStatus.NOT_FOUND.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(UnauthorizedCoachAccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrorResponse handleUnauthorizedCoachAccessException(UnauthorizedCoachAccessException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.FORBIDDEN.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(UnauthorizedStudentAccessException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ApiErrorResponse handleUnauthorizedStudentAccessException(UnauthorizedStudentAccessException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.FORBIDDEN.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(TaskAlreadyCompletedException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse handleTaskAlreadyCompletedException(TaskAlreadyCompletedException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage(), List.of(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(TaskAlreadyOpenException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse handleTaskAlreadyOpenException(TaskAlreadyOpenException exception, HttpServletRequest request) {
+        return new ApiErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage(), List.of(), request.getRequestURI());
     }
 
 }

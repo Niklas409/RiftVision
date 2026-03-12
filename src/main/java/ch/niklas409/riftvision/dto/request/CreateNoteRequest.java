@@ -1,13 +1,14 @@
 package ch.niklas409.riftvision.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class CreateNoteRequest {
 
     @NotBlank
     private String content;
 
-    @NotBlank
+    @NotNull
     private Long studentId;
 
     public CreateNoteRequest(String content, Long studentId) {
