@@ -12,7 +12,7 @@
 * Phase 4 – Security (JWT) ✅
 * Phase 5 – Riot API Integration ✅
 * Phase 6 – Coach Layer ✅
-* Phase 6.5 – Match Model Refactor ⏳
+* Phase 6.5 – Match Model Refactor ✅
 * Phase 7 – Production ⏳
 
 ---
@@ -273,15 +273,53 @@ PATCH `/tasks/{taskId}/uncomplete`
 
 ---
 
+
+
+---
+
+## Phase 6.5 – Match Model Refactor (Completed)
+
+Das ursprüngliche player-zentrierte Match-Modell wurde auf ein sauberes Multiplayer-Modell refactored.
+
+Neue Domain:
+
+`MatchEntity`
+- globales Riot Match
+- unique `matchId`
+- `playedAt`
+
+`MatchParticipantEntity`
+- referenziert `MatchEntity`
+- referenziert `PlayerEntity`
+- champion
+- kills
+- deaths
+- assists
+- win
+
+Umgesetzt:
+
+- Einführung von `MatchParticipantEntity`
+- `MatchEntity` auf globales Match-Modell reduziert
+- Speicherung aller 10 Spieler pro Riot Match
+- Riot Import speichert jetzt vollständige Match Participants
+- automatische Player-Erstellung über `getOrCreatePlayer(...)`
+- Speicherung von RiotId (`gameName` + `tagLine`) beim Player-Import
+- Stats-Berechnung refactored → nutzt jetzt `MatchParticipantEntity`
+- `MatchRepository` von alter Player-Query bereinigt
+- `MatchResponse` / `MatchMapper` auf neues Match-Modell angepasst
+
+
 ## 🎯 Nächster Fokus
 
-Phase 6.5 – Match Model Refactor
+Phase 6.6 – Match Analytics Endpoint
 
 Geplantes Ziel:
 
-- Einführung von `MatchParticipantEntity`
-- Trennung von Match und Player Stats
-- korrektes Domain-Modell für Multiplayer Matches
+- Endpoint `GET /matches/{matchId}`
+- Rückgabe eines Matches mit allen Participants
+- neues Response-Modell für Match + Participants
+- Grundlage für spätere Match-Analyse und Coaching-Views
 
 ---
 

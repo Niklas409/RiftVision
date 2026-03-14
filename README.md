@@ -1,148 +1,166 @@
 # RiftVision
 
-Coach-first Analytics & Player Development Backend für League of Legends.
+![Java](https://img.shields.io/badge/Java-21-orange) ![Spring
+Boot](https://img.shields.io/badge/Spring_Boot-Backend-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Docker](https://img.shields.io/badge/Docker-Container-blue)
+![Security](https://img.shields.io/badge/Security-JWT-red)
+![Status](https://img.shields.io/badge/Project-Active-success)
 
-RiftVision ist ein langfristiges Backend-Projekt zum systematischen Aufbau von Backend-Kompetenz:
+Backend-first **Analytics & Coaching Platform for League of Legends**.
 
-REST → Business Logic → Validation → Datenbank → Clean Architecture → Security → API Integration → Production Readiness.
+RiftVision ist ein langfristiges Backend-Projekt, das reale
+Backend-Architektur, Security und externe API‑Integration kombiniert.
 
-Das Projekt dient gleichzeitig als:
-- Lernprojekt
-- Architekturtraining
-- Portfolio-Projekt
-- Vorbereitung auf eine Backend-Stelle
+Ziel ist es, ein **produktionsnahes Backend-System** zu entwickeln, das
+später zur Grundlage einer vollständigen Analytics- und
+Coaching-Plattform werden kann.
 
----
+Dieses Projekt dient gleichzeitig als:
 
-## 🚀 Aktueller Stand
+-   Backend Portfolio Projekt
+-   Architekturtraining
+-   Vorbereitung auf eine Backend Developer Stelle
+-   Experimentierfeld für Security und API Design
 
-RiftVision ist aktuell ein funktionierendes Spring Boot Backend mit:
+------------------------------------------------------------------------
 
-- REST API für Player, Matches und Stats
-- PostgreSQL Persistenz via Docker
-- JPA Entities + Repository Layer
-- Saubere DTO-Trennung (Request / Response)
-- Mapper Pattern
-- Global Exception Handling
-- Konsistente ApiResponse-Hülle
-- Spring Security mit JWT Authentication
-- Passwort-Hashing mit BCrypt
-- Geschützte Endpoints via JWT Filter
-- Konsistente 401 Unauthorized Responses
-- Riot API Integration über separaten Client-Layer
-- Riot Account Lookup (`gameName` + `tagLine` → `puuid`)
-- Match-ID Lookup und Match-Detail Lookup über Riot Match V5
-- Eigenes internes Stats-DTO für letzte Match-Stats
-- Import-Pipeline von Riot → DTO → Entity → PostgreSQL
-- Import Response mit `imported` / `skipped`
+# Projekt Motivation
 
----
+Viele League‑of‑Legends Tools konzentrieren sich ausschließlich auf
+Statistiken.
 
-## 🛠 Tech Stack
+RiftVision verfolgt einen anderen Ansatz:
 
-- Java 21
-- Spring Boot 4
-- Gradle
-- PostgreSQL
-- Spring Data JPA
-- Spring Security
-- JWT
-- Docker / Docker Compose
-- Embedded Tomcat
-- Riot Games API
+**Coach‑First Player Development**
 
----
+Die Plattform soll Coaches ermöglichen:
 
-## 🌐 API Endpoints
+-   Matchdaten zu analysieren
+-   individuelle Coaching‑Notizen zu erstellen
+-   Trainingsaufgaben zu definieren
+-   Spielerfortschritt zu tracken
 
-### Public Endpoints
+Das Backend bildet dafür die technische Grundlage.
 
-GET /health
+------------------------------------------------------------------------
 
-POST /auth/register  
-POST /auth/login
+# Key Features
 
-### Protected Endpoints
+-   REST API für Player, Matches und Stats
+-   Riot Games API Integration
+-   Match Import Pipeline
+-   PostgreSQL Datenpersistenz
+-   JWT Authentication
+-   Secure Password Hashing (BCrypt)
+-   DTO Mapping Pattern
+-   Global Exception Handling
+-   Dockerisierte lokale Entwicklungsumgebung
+-   Konsistente API Response Struktur
 
-POST /players  
-POST /matches  
-GET /matches  
-GET /players/{playerId}/stats
+------------------------------------------------------------------------
 
-Authorization Header:
+# Backend Skills Demonstrated
 
-Authorization: Bearer <token>
+Dieses Projekt demonstriert praktische Erfahrung mit:
 
-### Internal Riot Endpoints
+-   REST API Design
+-   Layered Backend Architecture
+-   Authentication & Authorization
+-   Secure Password Storage
+-   External API Integration
+-   DTO Separation
+-   Exception Handling
+-   Database Persistence
+-   Clean Code Organisation
 
-GET /internal/riot/{gameName}/{tagLine}  
-GET /internal/riot/matches/{gameName}/{tagLine}  
-GET /internal/riot/recent-stats/{gameName}/{tagLine}  
-POST /internal/riot/import/{gameName}/{tagLine}?count=5
+------------------------------------------------------------------------
 
----
+# Tech Stack
 
-## 🔐 Authentication Flow
+## Backend
 
-### Register
+-   Java 21
+-   Spring Boot
+-   Spring Security
+-   Spring Data JPA
+-   JWT Authentication
 
-```json
-{
-  "email": "niklas@test.com",
-  "password": "123456"
-}
-```
+## Infrastruktur
 
-Passwort wird mit BCrypt gehasht und der User gespeichert.
+-   PostgreSQL
+-   Docker / Docker Compose
+-   Embedded Tomcat
 
-### Login
+## External APIs
 
-```json
-{
-  "email": "niklas@test.com",
-  "password": "123456"
-}
-```
+-   Riot Games API
 
-Response:
+------------------------------------------------------------------------
 
-```json
-{
-  "message": "Success",
-  "data": {
-    "message": "Login successful",
-    "token": "JWT_TOKEN"
-  }
-}
-```
+# Architektur
 
----
+RiftVision verwendet eine klassische **Layered Architecture**.
 
-## 🌍 Riot Import Flow
+    Controller
+       ↓
+    DTO Layer
+       ↓
+    Service Layer
+       ↓
+    Repository Layer
+       ↓
+    PostgreSQL
 
-```text
-Riot ID + TagLine
-        ↓
-Account API
-        ↓
-PUUID
-        ↓
-Match IDs
-        ↓
-Match Details
-        ↓
-Participant per PUUID finden
-        ↓
-Eigenes Stats-DTO bauen
-        ↓
-MatchEntity speichern
-        ↓
-PostgreSQL
-```
+External API Flow:
 
-Import Response Beispiel:
+    Controller
+       ↓
+    Service
+       ↓
+    Riot Client
+       ↓
+    Riot API
 
-```json
+Security Flow:
+
+    Request
+     ↓
+    JWT Filter
+     ↓
+    UserDetailsService
+     ↓
+    SecurityContext
+     ↓
+    Controller
+
+------------------------------------------------------------------------
+
+# Riot Match Import Pipeline
+
+RiftVision kann Matchdaten automatisch über die Riot API importieren.
+
+    Riot ID + TagLine
+            ↓
+    Account API
+            ↓
+    PUUID
+            ↓
+    Match IDs
+            ↓
+    Match Details
+            ↓
+    Participant finden
+            ↓
+    Stats DTO erzeugen
+            ↓
+    MatchEntity speichern
+            ↓
+    PostgreSQL
+
+Beispiel Response:
+
+``` json
 {
   "message": "Success",
   "data": {
@@ -152,76 +170,109 @@ Import Response Beispiel:
 }
 ```
 
----
+------------------------------------------------------------------------
 
-## ▶️ How to Run (local)
+# API Endpoints
+
+## Public
+
+    GET /health
+    POST /auth/register
+    POST /auth/login
+
+## Protected
+
+    POST /players
+    POST /matches
+    GET /matches
+    GET /players/{playerId}/stats
+
+Authorization Header:
+
+    Authorization: Bearer <token>
+
+------------------------------------------------------------------------
+
+# Projektstruktur
+
+    src/main/java/ch/niklas409/riftvision
+
+    config
+    controller
+    client/riot
+    domain/entity
+    dto/request
+    dto/response
+    dto/riot/response
+    exception
+    mapper
+    repository
+    security
+    service
+
+------------------------------------------------------------------------
+
+# Local Setup
 
 PostgreSQL starten:
 
-```bash
-docker compose up -d
-```
+    docker compose up -d
 
-App starten:
+Backend starten:
 
-```bash
-./gradlew bootRun
-```
+    ./gradlew bootRun
 
 Windows:
 
-```bash
-.\gradlew.bat bootRun
-```
+    gradlew.bat bootRun
 
 Server läuft auf:
 
-http://localhost:8080
+    http://localhost:8080
 
----
+------------------------------------------------------------------------
 
-## 🏗 Projektstruktur
+# Roadmap
 
-src/main/java/ch/niklas409/riftvision
+## Completed
 
-config  
-controller  
-client/riot  
-domain/entity  
-dto/request  
-dto/response  
-dto/riot/response  
-exception  
-mapper  
-repository  
-security  
-service
+Phase 0 -- Foundation\
+Phase 1 -- REST MVP\
+Phase 2 -- Database\
+Phase 3 -- Clean Architecture\
+Phase 4 -- Security (JWT)\
+Phase 5 -- Riot API Integration\
+Phase 6 -- Coach Layer\
+Phase 6.5 -- Match Model Refactor
 
-Layer-Struktur:
+## In Progress
 
-Controller → DTO / API Request → Service → Client / Entity → Repository → DB / External API
+Phase 6.6 -- Match Analytics Endpoint
 
-Security Flow:
+## Planned
 
-Request → JWT Filter → UserDetailsService → SecurityContext → Controller
+Phase 7 -- Production Readiness
 
----
+------------------------------------------------------------------------
 
-## 📌 Roadmap
+# Langfristige Vision
 
-Phase 0 – Foundation ✅  
-Phase 1 – REST MVP ✅  
-Phase 2 – Database ✅  
-Phase 3 – Clean Architecture ✅  
-Phase 4 – Security (JWT) ✅  
-Phase 5 – Riot API Integration ✅  
-Phase 6 – Coach Layer ⏳  
-Phase 6.5 – Match Model Refactor ⏳  
-Phase 7 – Production ⏳
+RiftVision soll langfristig eine Plattform werden für:
 
----
+-   Match Analytics
+-   Coaching Tools
+-   Player Development
+-   Trainingssysteme
+-   Fortschrittsanalyse
 
-## 🎯 Ziel
+------------------------------------------------------------------------
 
-Ein produktionsnahes Backend-Projekt mit realistischen Architekturentscheidungen, Security und echter externer API-Integration,
-das Schritt für Schritt Richtung Enterprise-Level erweitert wird.
+# Autor
+
+**Niklas Reubold**
+
+Backend Developer mit Fokus auf:
+
+-   Backend Architecture
+-   API Development
+-   Security
