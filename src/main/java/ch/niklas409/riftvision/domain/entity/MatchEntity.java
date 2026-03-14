@@ -55,6 +55,11 @@ public class MatchEntity {
         this.playedAt = playedAt;
     }
 
+    public MatchEntity(String matchId, Instant playedAt) {
+        this.matchId = matchId;
+        this.playedAt = playedAt;
+    }
+
     public Long getId() {
         return id;
     }

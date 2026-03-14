@@ -2,6 +2,7 @@ package ch.niklas409.riftvision.service;
 
 import ch.niklas409.riftvision.client.riot.RiotApiClient;
 import ch.niklas409.riftvision.domain.entity.MatchEntity;
+import ch.niklas409.riftvision.domain.entity.MatchParticipantEntity;
 import ch.niklas409.riftvision.domain.entity.PlayerEntity;
 import ch.niklas409.riftvision.dto.response.ImportMatchesResponse;
 import ch.niklas409.riftvision.dto.response.PlayerMatchStatsResponse;
@@ -105,22 +106,19 @@ public class RiotImportService {
             return false;
         }
         PlayerMatchStatsResponse stats = getPlayerStatsFromMatch(matchId, puuid);
-        MatchEntity matchEntity = toMatchEntity(player, stats);
+        MatchEntity matchEntity = toMatchEntity(stats);
         matchRepository.save(matchEntity);
+        MatchParticipantEntity participant = toMatchParticipantEntity(matchEntity, player, stats);
         return true;
     }
 
-    private MatchEntity toMatchEntity(PlayerEntity player, PlayerMatchStatsResponse stats) {
-        return new MatchEntity(
-                stats.getMatchId(),
-                player,
-                stats.getChampion(),
-                stats.getKills(),
-                stats.getDeaths(),
-                stats.getAssists(),
-                stats.isWin(),
-                Instant.ofEpochMilli(stats.getPlayedAt())
-        );
+    private MatchEntity toMatchEntity(PlayerMatchStatsResponse stats) {
+        return new MatchEntity(stats.getMatchId(),
+                Instant.ofEpochMilli(stats.getPlayedAt()));
+    }
+
+    private MatchParticipantEntity toMatchParticipantEntity(MatchEntity match, PlayerEntity player, PlayerMatchStatsResponse stats) {
+        return new MatchParticipantEntity(match, player, stats.getChampion(), stats.getKills(), stats.getDeaths(), stats.getAssists(), stats.isWin());
     }
 
 }
