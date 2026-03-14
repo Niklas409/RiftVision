@@ -35,9 +35,7 @@ public class MatchService {
     // Wird aktuell nicht mehr aktiv genutzt.
     // Neue Matches werden über RiotImportService importiert.
     public MatchResponse createMatch(MatchRequest request) {
-        PlayerEntity player = playerRepository.findByPlayerId(request.getPlayerId()).orElseThrow(() -> new ResourceNotFoundException("Player not found"));
-        MatchEntity match = new MatchEntity(null, Instant.now());
-        return matchMapper.toResponse(matchRepository.save(match));
+        throw new UnsupportedOperationException("Manual match creation is deprecated after phase 6.5");
     }
 
     public List<MatchResponse> getAllMatches() {
