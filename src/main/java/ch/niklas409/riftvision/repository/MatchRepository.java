@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface MatchRepository extends JpaRepository<MatchEntity, Long> {
 
-    List<MatchEntity> findByPlayer(PlayerEntity player);
     boolean existsByMatchId(String matchId);
     Optional<MatchEntity> findByMatchId(String matchId);
 

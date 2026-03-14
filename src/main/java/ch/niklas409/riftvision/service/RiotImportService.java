@@ -78,10 +78,9 @@ public class RiotImportService {
         int imported = 0;
         RiotAccountResponse account = getAccountByRiotId(gameName, tagLine);
         String puuid = account.getPuuid();
-        PlayerEntity player = getOrCreatePlayer(account);
         List<String> matchIds = riotApiClient.getMatchIdsByPuuid(puuid, count);
         for (String matchId : matchIds) {
-            if(importMatchIfNotExists(player, puuid, matchId)) {
+            if(importMatchIfNotExists(puuid, matchId)) {
                 imported++;
             } else {
                 skipped++;

@@ -8,7 +8,11 @@ import org.springframework.stereotype.Component;
 public class MatchMapper {
 
     public MatchResponse toResponse(MatchEntity entity) {
-        return new MatchResponse(entity.getId(), entity.getPlayer().getPlayerId(), entity.getChampion(), entity.isWin(), entity.getKills(), entity.getDeaths(), entity.getAssists(), entity.getPlayedAt());
+        return new MatchResponse(
+                entity.getId(),
+                entity.getMatchId(),
+                entity.getPlayedAt()
+        );
     }
 
 }
