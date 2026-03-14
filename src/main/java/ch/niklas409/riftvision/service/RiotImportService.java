@@ -101,12 +101,23 @@ public class RiotImportService {
                 ));
     }
 
+    private MatchEntity getOrCreateMatch(PlayerMatchStatsResponse stats) {
+        return matchRepository
+                .findByMatchId(stats.getMatchId())
+                .orElseGet(() -> matchRepository.save(
+                        new MatchEntity(
+                                stats.getMatchId(),
+                                Instant.ofEpochMilli(stats.getPlayedAt())
+                        )
+                ));
+    }
+
     private boolean importMatchIfNotExists(PlayerEntity player, String puuid, String matchId) {
         if (matchRepository.existsByMatchId(matchId)) {
             return false;
         }
         PlayerMatchStatsResponse stats = getPlayerStatsFromMatch(matchId, puuid);
-        MatchEntity matchEntity = toMatchEntity(stats);
+        MatchEntity matchEntity = getOrCreateMatch(stats);
         matchRepository.save(matchEntity);
         MatchParticipantEntity participant = toMatchParticipantEntity(matchEntity, player, stats);
         if (!matchParticipantRepository.existsByMatchAndPlayer(matchEntity, player)) {
