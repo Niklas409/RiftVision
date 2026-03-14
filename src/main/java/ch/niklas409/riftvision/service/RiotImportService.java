@@ -112,17 +112,14 @@ public class RiotImportService {
                 ));
     }
 
-    private boolean importMatchIfNotExists(PlayerEntity player, String puuid, String matchId) {
+    private boolean importMatchIfNotExists(String puuid, String matchId) {
         if (matchRepository.existsByMatchId(matchId)) {
             return false;
         }
+        RiotMatchResponse riotMatch = getMatch(matchId);
         PlayerMatchStatsResponse stats = getPlayerStatsFromMatch(matchId, puuid);
         MatchEntity matchEntity = getOrCreateMatch(stats);
-        matchRepository.save(matchEntity);
-        MatchParticipantEntity participant = toMatchParticipantEntity(matchEntity, player, stats);
-        if (!matchParticipantRepository.existsByMatchAndPlayer(matchEntity, player)) {
-            matchParticipantRepository.save(participant);
-        }
+        importParticipants(matchEntity, riotMatch);
         return true;
     }
 
@@ -133,6 +130,24 @@ public class RiotImportService {
 
     private MatchParticipantEntity toMatchParticipantEntity(MatchEntity match, PlayerEntity player, PlayerMatchStatsResponse stats) {
         return new MatchParticipantEntity(match, player, stats.getChampion(), stats.getKills(), stats.getDeaths(), stats.getAssists(), stats.isWin());
+    }
+
+    private void importParticipants(MatchEntity matchEntity, RiotMatchResponse riotMatch) {
+        for(RiotParticipantResponse riotParticipantResponse : riotMatch.getInfo().getParticipants()) {
+            PlayerEntity player = getOrCreatePlayer(riotParticipantResponse.getPuuid());
+            MatchParticipantEntity participant = new MatchParticipantEntity(matchEntity,
+                    player,
+                    riotParticipantResponse.getChampionName(),
+                    riotParticipantResponse.getKills(),
+                    riotParticipantResponse.getDeaths(),
+                    riotParticipantResponse.getAssists(),
+                    riotParticipantResponse.isWin());
+            matchParticipantRepository.save(participant);
+        }
+    }
+
+    private PlayerEntity getOrCreatePlayer(String puuid) {
+        return playerRepository.findByPlayerId(puuid).orElseGet(() -> playerRepository.save(new PlayerEntity(puuid, "Unknown", "XX")));
     }
 
 }
