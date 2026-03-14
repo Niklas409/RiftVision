@@ -9,6 +9,7 @@ import ch.niklas409.riftvision.dto.riot.response.RiotAccountResponse;
 import ch.niklas409.riftvision.dto.riot.response.RiotMatchResponse;
 import ch.niklas409.riftvision.dto.riot.response.RiotParticipantResponse;
 import ch.niklas409.riftvision.exception.ResourceNotFoundException;
+import ch.niklas409.riftvision.repository.MatchParticipantRepository;
 import ch.niklas409.riftvision.repository.MatchRepository;
 import ch.niklas409.riftvision.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,13 @@ public class RiotImportService {
     private final RiotApiClient riotApiClient;
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
+    private final MatchParticipantRepository matchParticipantRepository;
 
-    public RiotImportService(RiotApiClient riotApiClient, MatchRepository matchRepository, PlayerRepository playerRepository) {
+    public RiotImportService(RiotApiClient riotApiClient, MatchRepository matchRepository, PlayerRepository playerRepository, MatchParticipantRepository matchParticipantRepository) {
         this.riotApiClient = riotApiClient;
         this.matchRepository = matchRepository;
         this.playerRepository = playerRepository;
+        this.matchParticipantRepository = matchParticipantRepository;
     }
 
     public RiotAccountResponse getAccountByRiotId(String gameName, String tagLine) {
@@ -66,9 +69,9 @@ public class RiotImportService {
                 .toList();
     }
 
-    // TODO
-    // existsByMatchId(...) ist nur MVP-Logik.
-    // Später auf player + matchId umstellen, damit mehrere Spieler dasselbe Riot-Match haben können.
+    // TODO Phase 6.5:
+    // MatchEntity global pro Riot-Match speichern
+    // und MatchParticipantEntity pro (match, player) speichern.
     public ImportMatchesResponse importRecentMatches(String gameName, String tagLine, int count) {
         int skipped = 0;
         int imported = 0;
