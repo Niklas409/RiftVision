@@ -271,3 +271,66 @@ riftvision
 Aktuelle Layer-Struktur:
 
 Controller → Service → Client / Entity → Repository → DB / External API
+
+## Future Feature Idea – Map Annotation System
+
+Spätere Produktidee für RiftVision:
+
+Ein visuelles Map-Annotation-System für Coaching-Analysen direkt auf der League-of-Legends-Map.
+
+### Map-Spots
+
+Speichern von einzelnen Map-Spots:
+
+- Ward-Spots
+- Danger-Zonen
+- Positioning-Spots
+- Objective-Setup-Spots
+- Engage / Fight Positions
+
+Jeder Spot kann zusätzlich enthalten:
+
+- Titel / Label
+- Beschreibung / Coaching-Text
+- Kategorie (z. B. Ward, Danger, Objective)
+- Farbe / Marker-Typ
+
+### Routen / Pfade
+
+Speichern von Coaching-Routen auf der Map:
+
+- Roam-Routen
+- Jungle-Pathing
+- Vision-Routen
+- Rotation zu Objectives
+- Flank-Routen
+
+Eine Route besteht aus mehreren Punkten und kann ebenfalls enthalten:
+
+- Titel
+- Beschreibung / Erklärung
+- Coaching-Kommentar
+
+### Coaching-Kontext
+
+Annotations können optional zugeordnet werden zu:
+
+- einem spezifischen Match
+- einem Spieler
+- einer Champion- oder Rollen-Lektion
+- allgemeinen Lern-Templates (z. B. "Midlane Basics")
+
+### Ziel
+
+Coaches sollen visuelle Coaching-Annotations direkt zu Matches oder allgemeinen Lerninhalten speichern können.
+
+Spieler können dadurch:
+
+- konkrete Positionen auf der Map sehen
+- Roam- oder Jungle-Routen nachvollziehen
+- Danger-Zonen erkennen
+- Coaching-Kommentare direkt auf der Map lesen
+
+### Geplanter Zeitpunkt
+
+Post-MVP / spätere Produktphase (z. B. Phase 8+).
