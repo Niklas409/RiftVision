@@ -3,6 +3,8 @@ package ch.niklas409.riftvision.dto.riot.response;
 public class RiotParticipantResponse {
 
     private String puuid;
+    private String riotIdGameName;
+    private String riotIdTagline;
     private String championName;
     private int kills;
     private int deaths;
@@ -11,6 +13,14 @@ public class RiotParticipantResponse {
 
     public String getPuuid() {
         return puuid;
+    }
+
+    public String getRiotIdGameName() {
+        return riotIdGameName;
+    }
+
+    public String getRiotIdTagline() {
+        return riotIdTagline;
     }
 
     public String getChampionName() {
@@ -37,6 +47,14 @@ public class RiotParticipantResponse {
         this.puuid = puuid;
     }
 
+    public void setRiotIdGameName(String riotIdGameName) {
+        this.riotIdGameName = riotIdGameName;
+    }
+
+    public void setRiotIdTagline(String riotIdTagline) {
+        this.riotIdTagline = riotIdTagline;
+    }
+
     public void setChampionName(String championName) {
         this.championName = championName;
     }
@@ -56,4 +74,5 @@ public class RiotParticipantResponse {
     public void setWin(boolean win) {
         this.win = win;
     }
+
 }

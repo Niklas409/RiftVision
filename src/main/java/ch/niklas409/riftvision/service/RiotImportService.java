@@ -133,7 +133,11 @@ public class RiotImportService {
 
     private void importParticipants(MatchEntity matchEntity, RiotMatchResponse riotMatch) {
         for(RiotParticipantResponse riotParticipantResponse : riotMatch.getInfo().getParticipants()) {
-            PlayerEntity player = getOrCreatePlayer(riotParticipantResponse.getPuuid());
+            PlayerEntity player = getOrCreatePlayer(
+                    riotParticipantResponse.getPuuid(),
+                    riotParticipantResponse.getRiotIdGameName(),
+                    riotParticipantResponse.getRiotIdTagline()
+            );
             MatchParticipantEntity participant = new MatchParticipantEntity(matchEntity,
                     player,
                     riotParticipantResponse.getChampionName(),
@@ -145,8 +149,15 @@ public class RiotImportService {
         }
     }
 
-    private PlayerEntity getOrCreatePlayer(String puuid) {
-        return playerRepository.findByPlayerId(puuid).orElseGet(() -> playerRepository.save(new PlayerEntity(puuid, "Unknown", "XX")));
+    private PlayerEntity getOrCreatePlayer(String puuid, String gameName, String tagLine) {
+        return playerRepository.findByPlayerId(puuid)
+                .orElseGet(() -> playerRepository.save(
+                        new PlayerEntity(
+                                puuid,
+                                gameName != null ? gameName : "Unknown",
+                                tagLine != null ? tagLine : "XX"
+                        )
+                ));
     }
 
 }

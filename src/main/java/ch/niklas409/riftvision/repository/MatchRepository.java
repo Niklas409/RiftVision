@@ -1,10 +1,8 @@
 package ch.niklas409.riftvision.repository;
 
 import ch.niklas409.riftvision.domain.entity.MatchEntity;
-import ch.niklas409.riftvision.domain.entity.PlayerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface MatchRepository extends JpaRepository<MatchEntity, Long> {
