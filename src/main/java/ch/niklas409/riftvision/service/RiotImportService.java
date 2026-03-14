@@ -109,6 +109,9 @@ public class RiotImportService {
         MatchEntity matchEntity = toMatchEntity(stats);
         matchRepository.save(matchEntity);
         MatchParticipantEntity participant = toMatchParticipantEntity(matchEntity, player, stats);
+        if (!matchParticipantRepository.existsByMatchAndPlayer(matchEntity, player)) {
+            matchParticipantRepository.save(participant);
+        }
         return true;
     }
 
