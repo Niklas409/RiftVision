@@ -3,7 +3,12 @@ package ch.niklas409.riftvision.domain.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "match_participants")
+@Table(
+        name = "match_participants",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"match_id", "player_id"})
+        }
+)
 public class MatchParticipantEntity {
 
     @Id
