@@ -1,29 +1,31 @@
 package ch.niklas409.riftvision.dto.response;
 
-import java.time.Instant;
+public class MatchParticipantResponse {
 
-public class PlayerMatchStatsResponse {
-
-    private String matchId;
+    private String playerId;
+    private String playerName;
     private String champion;
     private int kills;
     private int deaths;
     private int assists;
     private boolean win;
-    private Instant playedAt;
 
-    public PlayerMatchStatsResponse(String matchId, String champion, int kills, int deaths, int assists, boolean win, Instant playedAt) {
-        this.matchId = matchId;
+    public MatchParticipantResponse(String playerId, String playerName, String champion, int kills, int deaths, int assists, boolean win) {
+        this.playerId = playerId;
+        this.playerName = playerName;
         this.champion = champion;
         this.kills = kills;
         this.deaths = deaths;
         this.assists = assists;
         this.win = win;
-        this.playedAt = playedAt;
     }
 
-    public String getMatchId() {
-        return matchId;
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public String getPlayerName() {
+        return playerName;
     }
 
     public String getChampion() {
@@ -46,12 +48,12 @@ public class PlayerMatchStatsResponse {
         return win;
     }
 
-    public Instant getPlayedAt() {
-        return playedAt;
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
-    public void setMatchId(String matchId) {
-        this.matchId = matchId;
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
     public void setChampion(String champion) {
@@ -72,9 +74,5 @@ public class PlayerMatchStatsResponse {
 
     public void setWin(boolean win) {
         this.win = win;
-    }
-
-    public void setPlayedAt(Instant playedAt) {
-        this.playedAt = playedAt;
     }
 }

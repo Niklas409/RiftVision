@@ -1,18 +1,18 @@
 @baseUrl = http://localhost:8080
-@playerId = player-001
+
 @email = niklas@test.com
 @password = 123456
-@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjb2FjaEB0ZXN0LmNvbSIsImlhdCI6MTc3MzUyNzAxMSwiZXhwIjoxNzczNTMwNjExfQ.zN1cd81cUQ6BJbWFR38dNXh3ZDC5k8m2QOulgAc08AM
+@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtsYXNAdGVzdC5jb20iLCJpYXQiOjE3NzM1ODQ0OTAsImV4cCI6MTc3MzU4ODA5MH0.cg4TJOse9HUynmPHIzrxh_R_WQGKSd7uNdaFNUmQkr4
 
 @coachEmail = coach@test.com
 @coachPassword = 123456
-@coachJwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjb2FjaEB0ZXN0LmNvbSIsImlhdCI6MTc3MzMyMzQ5NiwiZXhwIjoxNzczMzI3MDk2fQ.eP5jYzBI5Izr7N0NOdXc5chr9wjKnZqxB4ORF4J-afQ
+@coachJwt = test
 
 @studentEmail = student@test.com
 @studentPassword = 123456
-@studentJwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwiaWF0IjoxNzczMzIzNDgxLCJleHAiOjE3NzMzMjcwODF9.vwAWmR-1cbNpKAOwhB741_gjF0zzHRQ59rJU-2ZyCCQ
-@studentId = 4
+@studentJwt = test
 
+@studentId = 4
 @matchId = EUW1_7675782164
 
 ### ========================================
@@ -24,10 +24,10 @@ GET {{baseUrl}}/health
 
 
 ### ========================================
-### AUTH - REGISTER
+### AUTH
 ### ========================================
 
-### Register user
+### Register main user
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
@@ -36,48 +36,7 @@ Content-Type: application/json
   "password": "{{password}}"
 }
 
-### Register - duplicate email
-POST {{baseUrl}}/auth/register
-Content-Type: application/json
-
-{
-  "email": "{{email}}",
-  "password": "{{password}}"
-}
-
-### Register - invalid email
-POST {{baseUrl}}/auth/register
-Content-Type: application/json
-
-{
-  "email": "not-an-email",
-  "password": "123456"
-}
-
-### Register - blank password
-POST {{baseUrl}}/auth/register
-Content-Type: application/json
-
-{
-  "email": "newuser@test.com",
-  "password": ""
-}
-
-### Register - blank email
-POST {{baseUrl}}/auth/register
-Content-Type: application/json
-
-{
-  "email": "",
-  "password": "123456"
-}
-
-
-### ========================================
-### AUTH - LOGIN
-### ========================================
-
-### Login success
+### Login main user
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
@@ -86,168 +45,13 @@ Content-Type: application/json
   "password": "{{password}}"
 }
 
-### Login - wrong password
-POST {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-  "email": "{{email}}",
-  "password": "wrongpassword"
-}
-
-### Login - user does not exist
-POST {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-  "email": "doesnotexist@test.com",
-  "password": "123456"
-}
-
-
-### ========================================
-### PROTECTED ENDPOINTS - WITHOUT TOKEN
-### ========================================
-
-### Get all matches without token -> should be 401
-GET {{baseUrl}}/matches
-
-### Get player stats without token -> should be 401
-GET {{baseUrl}}/players/{{playerId}}/stats
-
-
-### ========================================
-### PLAYER
-### ========================================
-
-### Create player
-POST {{baseUrl}}/players
-Content-Type: application/json
-Authorization: Bearer {{jwt}}
-
-{
-  "playerId": "{{playerId}}",
-  "name": "Niklas",
-  "region": "EUW"
-}
-
-### Create player - validation error
-POST {{baseUrl}}/players
-Content-Type: application/json
-Authorization: Bearer {{jwt}}
-
-{
-  "playerId": "",
-  "name": "",
-  "region": ""
-}
-
-
-### ========================================
-### MATCHES
-### ========================================
-
-### Create first match
-POST {{baseUrl}}/matches
-Content-Type: application/json
-Authorization: Bearer {{jwt}}
-
-{
-  "playerId": "{{playerId}}",
-  "champion": "Ahri",
-  "win": true,
-  "kills": 10,
-  "deaths": 2,
-  "assists": 6,
-  "playedAt": "2026-03-01T21:30:00Z"
-}
-
-### Create second match
-POST {{baseUrl}}/matches
-Content-Type: application/json
-Authorization: Bearer {{jwt}}
-
-{
-  "playerId": "{{playerId}}",
-  "champion": "Vayne",
-  "win": true,
-  "kills": 12,
-  "deaths": 1,
-  "assists": 3,
-  "playedAt": "2026-03-01T22:15:00Z"
-}
-
-### Create match - non-existing player
-POST {{baseUrl}}/matches
-Content-Type: application/json
-Authorization: Bearer {{jwt}}
-
-{
-  "playerId": "does-not-exist",
-  "champion": "Darius",
-  "win": false,
-  "kills": 2,
-  "deaths": 10,
-  "assists": 1,
-  "playedAt": "2026-03-01T23:00:00Z"
-}
-
-
-### ========================================
-### QUERIES
-### ========================================
-
-### Get all matches
-GET {{baseUrl}}/matches
-Authorization: Bearer {{jwt}}
-
-### Get stats for existing player
-GET {{baseUrl}}/players/{{playerId}}/stats
-Authorization: Bearer {{jwt}}
-
-### Get stats for non-existing player
-GET {{baseUrl}}/players/does-not-exist/stats
-Authorization: Bearer {{jwt}}
-
-### ========================================
-### RIOT IMPORT / INTERNAL
-### ========================================
-
-### Riot account lookup
-GET {{baseUrl}}/internal/riot/Niklas409/0409
-
-### Riot recent match ids
-GET {{baseUrl}}/internal/riot/matches/Niklas409/0409
-
-### Riot recent stats
-GET {{baseUrl}}/internal/riot/recent-stats/Niklas409/0409
-
-### Riot import recent matches
-POST {{baseUrl}}/internal/riot/import/Niklas409/0409
-
-### Riot import recent matches with count
-POST {{baseUrl}}/internal/riot/import/Niklas409/0409?count=3
-
-### ========================================
-### COACH RELATION
-### ========================================
-
-### Register coach test user
+### Register coach
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
   "email": "{{coachEmail}}",
   "password": "{{coachPassword}}"
-}
-
-### Register student test user
-POST {{baseUrl}}/auth/register
-Content-Type: application/json
-
-{
-  "email": "{{studentEmail}}",
-  "password": "{{studentPassword}}"
 }
 
 ### Login coach
@@ -259,6 +63,15 @@ Content-Type: application/json
   "password": "{{coachPassword}}"
 }
 
+### Register student
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{studentEmail}}",
+  "password": "{{studentPassword}}"
+}
+
 ### Login student
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
@@ -268,67 +81,58 @@ Content-Type: application/json
   "password": "{{studentPassword}}"
 }
 
-### Assign student to coach -> should be 200/201 with COACH token
-POST {{baseUrl}}/coach/students/{{studentId}}
-Authorization: Bearer {{coachJwt}}
 
-### Assign same student again -> should fail because relation already exists
-POST {{baseUrl}}/coach/students/{{studentId}}
-Authorization: Bearer {{coachJwt}}
+### ========================================
+### RIOT IMPORT
+### ========================================
 
-### Assign student with normal USER token -> should be 403
-POST {{baseUrl}}/coach/students/{{studentId}}
-Authorization: Bearer {{studentJwt}}
+### Riot account lookup
+GET {{baseUrl}}/internal/riot/Niklas409/0409
 
-### Assign non-existing student -> should be 404
-POST {{baseUrl}}/coach/students/999999
-Authorization: Bearer {{coachJwt}}
+### Riot recent match ids
+GET {{baseUrl}}/internal/riot/matches/Niklas409/0409
 
-### Coach assigns himself as student -> should fail
-POST {{baseUrl}}/coach/students/3
-Authorization: Bearer {{coachJwt}}
+### Riot recent stats
+GET {{baseUrl}}/internal/riot/recent-stats/Niklas409/0409
+
+### Import recent matches
+POST {{baseUrl}}/internal/riot/import/Niklas409/0409
+Authorization: Bearer {{jwt}}
+
+### Import recent matches with count
+POST {{baseUrl}}/internal/riot/import/Niklas409/0409?count=3
+Authorization: Bearer {{jwt}}
+
+
+### ========================================
+### MATCHES
+### ========================================
+
+### Get all matches
+GET {{baseUrl}}/matches
+Authorization: Bearer {{jwt}}
+
+### Get match details by matchId
+GET {{baseUrl}}/matches/{{matchId}}
+Authorization: Bearer {{jwt}}
+
 
 ### ========================================
 ### COACH - STUDENTS
 ### ========================================
 
-### Get students for coach -> should return list of assigned students
+### Assign student to coach
+POST {{baseUrl}}/coach/students/{{studentId}}
+Authorization: Bearer {{coachJwt}}
+
+### Get students for coach
 GET {{baseUrl}}/coach/students
 Authorization: Bearer {{coachJwt}}
 
-### Get students for coach -> should return empty list if no students assigned
-GET {{baseUrl}}/coach/students
-Authorization: Bearer {{coachJwt}}
-
-### Get students without token -> should be 401
-GET {{baseUrl}}/coach/students
-
-### Get students with normal USER token -> should be 403
-GET {{baseUrl}}/coach/students
-Authorization: Bearer {{studentJwt}}
-
-### ========================================
-### COACH - REMOVE STUDENT
-### ========================================
-
-### Remove assigned student from coach -> should succeed
+### Remove student from coach
 DELETE {{baseUrl}}/coach/students/{{studentId}}
 Authorization: Bearer {{coachJwt}}
 
-### Remove same student again -> should be 404 because relation no longer exists
-DELETE {{baseUrl}}/coach/students/{{studentId}}
-Authorization: Bearer {{coachJwt}}
-
-### Remove student without token -> should be 401
-DELETE {{baseUrl}}/coach/students/{{studentId}}
-
-### Remove student with normal USER token -> should be 403
-DELETE {{baseUrl}}/coach/students/{{studentId}}
-Authorization: Bearer {{studentJwt}}
-
-### Remove non-existing student -> should be 404
-DELETE {{baseUrl}}/coach/students/999999
-Authorization: Bearer {{coachJwt}}
 
 ### ========================================
 ### MATCH NOTES
@@ -344,36 +148,11 @@ Content-Type: application/json
   "content": "Wave zu früh gepusht – Jungle Gank möglich."
 }
 
-### Create note with USER token -> should be 403
-POST {{baseUrl}}/coach/matches/{{matchId}}/notes
-Authorization: Bearer {{studentJwt}}
-Content-Type: application/json
-
-{
-  "studentId": {{studentId}},
-  "content": "Test"
-}
-
-### Get notes for match -> should return all notes for coach + student + match
+### Get notes for match
 GET {{baseUrl}}/coach/matches/{{matchId}}/notes?studentId={{studentId}}
 Authorization: Bearer {{coachJwt}}
 
-### Get notes for match with USER token -> should be 403
-GET {{baseUrl}}/coach/matches/{{matchId}}/notes?studentId={{studentId}}
-Authorization: Bearer {{studentJwt}}
-
-### Get notes for match without token -> should be 401
-GET {{baseUrl}}/coach/matches/{{matchId}}/notes?studentId={{studentId}}
-
-### Get notes for non-existing match -> should be 404
-GET {{baseUrl}}/coach/matches/UNKNOWN_MATCH_ID/notes?studentId={{studentId}}
-Authorization: Bearer {{coachJwt}}
-
-### Get notes for non-existing student -> should be 404
-GET {{baseUrl}}/coach/matches/{{matchId}}/notes?studentId=999999
-Authorization: Bearer {{coachJwt}}
-
-### Update note -> should succeed for owning coach
+### Update note
 PUT {{baseUrl}}/coach/notes/1
 Authorization: Bearer {{coachJwt}}
 Content-Type: application/json
@@ -382,50 +161,16 @@ Content-Type: application/json
   "content": "Wave zu früh gepusht und Recall Timing war ebenfalls schlecht."
 }
 
-### Update note with USER token -> should be 403
-PUT {{baseUrl}}/coach/notes/1
-Authorization: Bearer {{studentJwt}}
-Content-Type: application/json
-
-{
-  "content": "Test"
-}
-
-### Update non-existing note -> should be 404
-PUT {{baseUrl}}/coach/notes/999999
-Authorization: Bearer {{coachJwt}}
-Content-Type: application/json
-
-{
-  "content": "Test"
-}
-
-### Update note with invalid body -> should be 400
-PUT {{baseUrl}}/coach/notes/1
-Authorization: Bearer {{coachJwt}}
-Content-Type: application/json
-
-{
-  "content": ""
-}
-
-### Delete note -> should succeed
+### Delete note
 DELETE {{baseUrl}}/coach/notes/1
 Authorization: Bearer {{coachJwt}}
 
-### Delete note with USER token -> should be 403
-DELETE {{baseUrl}}/coach/notes/1
-Authorization: Bearer {{studentJwt}}
-
-### Delete non-existing note -> should be 404
-DELETE {{baseUrl}}/coach/notes/999999
-Authorization: Bearer {{coachJwt}}
 
 ### ========================================
-### COACH - TASKS
+### TASKS
 ### ========================================
 
-### Create task for student -> should succeed
+### Create task for student
 POST {{baseUrl}}/coach/students/{{studentId}}/tasks
 Authorization: Bearer {{coachJwt}}
 Content-Type: application/json
@@ -434,104 +179,11 @@ Content-Type: application/json
   "description": "3 Games lang nur auf Vision achten"
 }
 
-### Create second task for student -> should succeed
-POST {{baseUrl}}/coach/students/{{studentId}}/tasks
-Authorization: Bearer {{coachJwt}}
-Content-Type: application/json
-
-{
-  "description": "Vor jedem Recall Wave-State bewusst prüfen"
-}
-
-### Create task with USER token -> should be 403
-POST {{baseUrl}}/coach/students/{{studentId}}/tasks
-Authorization: Bearer {{studentJwt}}
-Content-Type: application/json
-
-{
-  "description": "Test"
-}
-
-### Create task without token -> should be 401
-POST {{baseUrl}}/coach/students/{{studentId}}/tasks
-Content-Type: application/json
-
-{
-  "description": "Test"
-}
-
-### Create task for non-existing student -> should be 404
-POST {{baseUrl}}/coach/students/999999/tasks
-Authorization: Bearer {{coachJwt}}
-Content-Type: application/json
-
-{
-  "description": "Test"
-}
-
-### Create task with invalid body -> should be 400
-POST {{baseUrl}}/coach/students/{{studentId}}/tasks
-Authorization: Bearer {{coachJwt}}
-Content-Type: application/json
-
-{
-  "description": ""
-}
-
-### Get tasks for student -> should return all tasks
+### Get tasks for student
 GET {{baseUrl}}/coach/students/{{studentId}}/tasks
 Authorization: Bearer {{coachJwt}}
 
-### Get tasks with USER token -> should be 403
-GET {{baseUrl}}/coach/students/{{studentId}}/tasks
-Authorization: Bearer {{studentJwt}}
-
-### Get tasks without token -> should be 401
-GET {{baseUrl}}/coach/students/{{studentId}}/tasks
-
-### Get tasks for non-existing student -> should be 404
-GET {{baseUrl}}/coach/students/999999/tasks
-Authorization: Bearer {{coachJwt}}
-
-### Complete own task -> should succeed
-PATCH {{baseUrl}}/tasks/1/complete
-Authorization: Bearer {{studentJwt}}
-
-### Complete second own task -> should succeed
-PATCH {{baseUrl}}/tasks/2/complete
-Authorization: Bearer {{studentJwt}}
-
-### Complete task without token -> should be 401
-PATCH {{baseUrl}}/tasks/1/complete
-
-### Complete task with coach token -> should be 403
-PATCH {{baseUrl}}/tasks/1/complete
-Authorization: Bearer {{coachJwt}}
-
-### Complete non-existing task -> should be 404
-PATCH {{baseUrl}}/tasks/999999/complete
-Authorization: Bearer {{studentJwt}}
-
-### Delete task -> should succeed
-DELETE {{baseUrl}}/coach/tasks/1
-Authorization: Bearer {{coachJwt}}
-
-### Delete second task -> should succeed
-DELETE {{baseUrl}}/coach/tasks/2
-Authorization: Bearer {{coachJwt}}
-
-### Delete task without token -> should be 401
-DELETE {{baseUrl}}/coach/tasks/1
-
-### Delete task with USER token -> should be 403
-DELETE {{baseUrl}}/coach/tasks/1
-Authorization: Bearer {{studentJwt}}
-
-### Delete non-existing task -> should be 404
-DELETE {{baseUrl}}/coach/tasks/999999
-Authorization: Bearer {{coachJwt}}
-
-### Update task -> should succeed
+### Update task
 PUT {{baseUrl}}/coach/tasks/1
 Authorization: Bearer {{coachJwt}}
 Content-Type: application/json
@@ -540,22 +192,14 @@ Content-Type: application/json
   "description": "5 Games Vision + Wave Management üben"
 }
 
-### Update task with USER token -> should be 403
-PUT {{baseUrl}}/coach/tasks/1
+### Complete own task
+PATCH {{baseUrl}}/tasks/1/complete
 Authorization: Bearer {{studentJwt}}
-Content-Type: application/json
 
-{
-  "description": "Test"
-}
-
-### Uncomplete task -> should succeed
+### Uncomplete own task
 PATCH {{baseUrl}}/tasks/1/uncomplete
 Authorization: Bearer {{studentJwt}}
 
-### Uncomplete task without token -> should be 401
-PATCH {{baseUrl}}/tasks/1/uncomplete
-
-### Uncomplete task with coach token -> should be 403
-PATCH {{baseUrl}}/tasks/1/uncomplete
+### Delete task
+DELETE {{baseUrl}}/coach/tasks/1
 Authorization: Bearer {{coachJwt}}

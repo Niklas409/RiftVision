@@ -2,6 +2,7 @@ package ch.niklas409.riftvision.controller;
 
 import ch.niklas409.riftvision.dto.ApiResponse;
 import ch.niklas409.riftvision.dto.request.MatchRequest;
+import ch.niklas409.riftvision.dto.response.MatchDetailsResponse;
 import ch.niklas409.riftvision.dto.response.MatchResponse;
 import ch.niklas409.riftvision.service.MatchService;
 import jakarta.validation.Valid;
@@ -29,6 +30,11 @@ public class MatchController {
     @GetMapping
     public ApiResponse<List<MatchResponse>> getAllMatches() {
         return ApiResponse.success(matchService.getAllMatches());
+    }
+
+    @GetMapping("/{matchId}")
+    public ApiResponse<MatchDetailsResponse> getMatchByMatchId(@PathVariable String matchId) {
+        return ApiResponse.success(matchService.getMatchByMatchId(matchId));
     }
 
 }

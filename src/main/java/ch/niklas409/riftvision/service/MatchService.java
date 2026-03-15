@@ -2,6 +2,8 @@ package ch.niklas409.riftvision.service;
 
 import ch.niklas409.riftvision.domain.entity.MatchParticipantEntity;
 import ch.niklas409.riftvision.dto.request.MatchRequest;
+import ch.niklas409.riftvision.dto.response.MatchDetailsResponse;
+import ch.niklas409.riftvision.dto.response.MatchParticipantResponse;
 import ch.niklas409.riftvision.dto.response.MatchResponse;
 import ch.niklas409.riftvision.dto.response.PlayerStatsResponse;
 import ch.niklas409.riftvision.exception.ResourceNotFoundException;
@@ -12,8 +14,10 @@ import ch.niklas409.riftvision.repository.MatchParticipantRepository;
 import ch.niklas409.riftvision.repository.MatchRepository;
 import ch.niklas409.riftvision.repository.PlayerRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,6 +61,24 @@ public class MatchService {
         double rawKda = (kills + assists) / (double) Math.max(1, deaths);
         double kda = Math.round(rawKda * 100.0) / 100.0;
         return new PlayerStatsResponse(playerId, matchCount, wins, losses, kills, deaths, assists, kda);
+    }
+
+    @Transactional
+    public MatchDetailsResponse getMatchByMatchId(String matchId) {
+        List<MatchParticipantResponse> participants = new ArrayList<>();
+        MatchEntity match = matchRepository.findByMatchId(matchId).orElseThrow(() -> new ResourceNotFoundException("Match not found"));
+        for(MatchParticipantEntity participant : match.getParticipants()) {
+            participants.add(new MatchParticipantResponse(participant.getPlayer().getPlayerId(),
+                    participant.getPlayer().getName(),
+                    participant.getChampion(),
+                    participant.getKills(),
+                    participant.getDeaths(),
+                    participant.getAssists(),
+                    participant.isWin()));
+        }
+        return new MatchDetailsResponse(match.getMatchId(),
+                match.getPlayedAt(),
+                participants);
     }
 
 }
