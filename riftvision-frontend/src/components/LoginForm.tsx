@@ -35,8 +35,6 @@ function LoginForm() {
       localStorage.setItem("token", data.data.token);
       console.log("Gespeicherter Token:", data.data.token);
       window.location.reload();
-
-      window.location.reload();
     } catch (error) {
       console.error("Login Fehler:", error);
       setError("Server nicht erreichbar");
