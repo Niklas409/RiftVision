@@ -18,6 +18,10 @@ public class MatchResponse {
         return id;
     }
 
+    public String getMatchId() {
+        return matchId;
+    }
+
     public Instant getPlayedAt() {
         return playedAt;
     }
@@ -26,7 +30,12 @@ public class MatchResponse {
         this.id = id;
     }
 
+    public void setMatchId(String matchId) {
+        this.matchId = matchId;
+    }
+
     public void setPlayedAt(Instant playedAt) {
         this.playedAt = playedAt;
     }
+
 }
