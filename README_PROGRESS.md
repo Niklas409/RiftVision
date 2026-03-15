@@ -310,18 +310,103 @@ Umgesetzt:
 - `MatchResponse` / `MatchMapper` auf neues Match-Modell angepasst
 
 
-## 🎯 Nächster Fokus
+## Phase 6.6 – Match Analytics Endpoint (Completed)
 
-Phase 6.6 – Match Analytics Endpoint
+Neuer Analyse-Endpoint für Match Details wurde implementiert.
 
-Geplantes Ziel:
+Ziel:
+Ein komplettes Riot Match mit allen 10 Participants abrufen können.
+Dies bildet die Grundlage für spätere Coaching-Analysen und Frontend-Match-Views.
 
-- Endpoint `GET /matches/{matchId}`
-- Rückgabe eines Matches mit allen Participants
-- neues Response-Modell für Match + Participants
-- Grundlage für spätere Match-Analyse und Coaching-Views
+Endpoint:
+
+GET `/matches/{matchId}`
+
+Response enthält:
+
+- matchId
+- playedAt
+- participants (alle 10 Spieler)
+
+Neues Response Modell:
+
+MatchDetailsResponse
+- matchId
+- playedAt
+- List<MatchParticipantResponse>
+
+MatchParticipantResponse
+- playerId
+- playerName
+- champion
+- kills
+- deaths
+- assists
+- win
+
+Umsetzung:
+
+- Neuer Service Endpoint `getMatchByMatchId(...)`
+- Mapping von `MatchParticipantEntity` → `MatchParticipantResponse`
+- Lazy Loading Problem mit `@Transactional` gelöst
+- Controller Endpoint `GET /matches/{matchId}` hinzugefügt
+- Erweiterung der HTTP Test Suite
+
+Ergebnis:
+
+Match Details API liefert vollständige Riot Match Daten inkl. aller Participants.
 
 ---
+
+
+## Phase 6.7 – Role Management (Admin)
+
+Admin-Funktionalität für Rollenverwaltung hinzugefügt.
+
+Ziel:
+Coaches sollen nicht automatisch entstehen, sondern bewusst freigeschaltet werden.
+
+Admin Endpoint:
+
+POST `/internal/admin/users/{userId}/make-coach`
+
+Features:
+
+- Admin kann registrierten User zum Coach machen
+- doppelte Coach-Zuweisung wird verhindert
+- Endpoint durch Security geschützt
+
+Security:
+
+`@PreAuthorize("hasRole('ADMIN')")`
+
+Tests:
+
+- USER → 403
+- COACH → 403
+- ADMIN → erlaubt
+
+Ergebnis:
+
+Rollenverwaltung für Coaches ist jetzt kontrolliert möglich.
+
+---
+
+## 🎯 Nächster Fokus
+
+Frontend MVP starten.
+
+Geplante erste Frontend-Views:
+
+1. Login Page
+2. Dashboard
+3. Riot Import
+4. Match List
+5. Match Detail (Participants + Notes + Tasks)
+
+Ziel:
+
+Backend-Flow erstmals komplett im Frontend nutzbar machen.
 
 ## 📊 Projekt-Level
 
