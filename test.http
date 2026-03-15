@@ -7,10 +7,11 @@
 @coachEmail = coach@test.com
 @coachPassword = 123456
 @coachJwt = test
+@userIdFromCoach = 1
 
 @studentEmail = student@test.com
 @studentPassword = 123456
-@studentJwt = test
+@studentJwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdHVkZW50QHRlc3QuY29tIiwiaWF0IjoxNzczNTg2MTQzLCJleHAiOjE3NzM1ODk3NDN9.grpFxPHEaleWtVlvBDIL1psTNE0NIpqtD10MYKkQJtw
 
 @studentId = 4
 @matchId = EUW1_7675782164
@@ -81,6 +82,9 @@ Content-Type: application/json
   "password": "{{studentPassword}}"
 }
 
+### Make user coach
+POST {{baseUrl}}/internal/admin/users/{{userIdFromCoach}}/make-coach
+Authorization: Bearer {{jwt}}
 
 ### ========================================
 ### RIOT IMPORT

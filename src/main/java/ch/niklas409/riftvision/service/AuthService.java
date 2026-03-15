@@ -5,7 +5,9 @@ import ch.niklas409.riftvision.domain.entity.UserEntity;
 import ch.niklas409.riftvision.dto.request.LoginRequest;
 import ch.niklas409.riftvision.dto.response.AuthResponse;
 import ch.niklas409.riftvision.dto.request.RegisterRequest;
+import ch.niklas409.riftvision.exception.InvalidCoachRoleException;
 import ch.niklas409.riftvision.exception.InvalidCredentialsException;
+import ch.niklas409.riftvision.exception.ResourceNotFoundException;
 import ch.niklas409.riftvision.repository.UserRepository;
 import ch.niklas409.riftvision.security.JwtService;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -43,5 +45,14 @@ public class AuthService {
         }
         String token = jwtService.generateToken(userEntity.getEmail());
         return new AuthResponse("Login successful", token);
+    }
+
+    public void makeCoach(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("UserId not found"));
+        if(userEntity.getRole() == Role.COACH) {
+            throw new InvalidCoachRoleException("User is already a Coach");
+        }
+        userEntity.setRole(Role.COACH);
+        userRepository.save(userEntity);
     }
 }
