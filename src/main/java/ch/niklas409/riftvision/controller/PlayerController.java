@@ -1,7 +1,10 @@
 package ch.niklas409.riftvision.controller;
 
 import ch.niklas409.riftvision.dto.ApiResponse;
+import ch.niklas409.riftvision.dto.request.AddPlayerRequest;
+import ch.niklas409.riftvision.dto.request.MatchRequest;
 import ch.niklas409.riftvision.dto.request.PlayerRequest;
+import ch.niklas409.riftvision.dto.response.MatchResponse;
 import ch.niklas409.riftvision.dto.response.PlayerResponse;
 import ch.niklas409.riftvision.dto.response.PlayerStatsResponse;
 import ch.niklas409.riftvision.service.MatchService;
@@ -31,6 +34,12 @@ public class PlayerController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<PlayerResponse> createPlayer(@Valid @RequestBody PlayerRequest request) {
         return ApiResponse.success(playerService.createPlayer(request));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<PlayerResponse> linkAccount(@Valid @RequestBody AddPlayerRequest request) {
+        return ApiResponse.success(playerService.addPlayerToUser(request));
     }
 
 }
