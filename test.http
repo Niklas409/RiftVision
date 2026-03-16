@@ -2,7 +2,7 @@
 
 @email = niklas@test.com
 @password = 123456
-@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtsYXNAdGVzdC5jb20iLCJpYXQiOjE3NzM1ODQ0OTAsImV4cCI6MTc3MzU4ODA5MH0.cg4TJOse9HUynmPHIzrxh_R_WQGKSd7uNdaFNUmQkr4
+@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtsYXNAdGVzdC5jb20iLCJpYXQiOjE3NzM2NjcyNTYsImV4cCI6MTc3MzY3MDg1Nn0.6Ctck-OLjj-yg_G3gZQj0O3e5JyArGQTZ2exdBVGRbE
 
 @coachEmail = coach@test.com
 @coachPassword = 123456

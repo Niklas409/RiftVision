@@ -4,6 +4,7 @@ import ch.niklas409.riftvision.client.riot.RiotApiClient;
 import ch.niklas409.riftvision.domain.entity.MatchEntity;
 import ch.niklas409.riftvision.domain.entity.MatchParticipantEntity;
 import ch.niklas409.riftvision.domain.entity.PlayerEntity;
+import ch.niklas409.riftvision.domain.entity.UserEntity;
 import ch.niklas409.riftvision.dto.response.ImportMatchesResponse;
 import ch.niklas409.riftvision.dto.response.PlayerMatchStatsResponse;
 import ch.niklas409.riftvision.dto.riot.response.RiotAccountResponse;
@@ -13,6 +14,9 @@ import ch.niklas409.riftvision.exception.ResourceNotFoundException;
 import ch.niklas409.riftvision.repository.MatchParticipantRepository;
 import ch.niklas409.riftvision.repository.MatchRepository;
 import ch.niklas409.riftvision.repository.PlayerRepository;
+import ch.niklas409.riftvision.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -25,12 +29,14 @@ public class RiotImportService {
     private final MatchRepository matchRepository;
     private final PlayerRepository playerRepository;
     private final MatchParticipantRepository matchParticipantRepository;
+    private final UserRepository userRepository;
 
-    public RiotImportService(RiotApiClient riotApiClient, MatchRepository matchRepository, PlayerRepository playerRepository, MatchParticipantRepository matchParticipantRepository) {
+    public RiotImportService(RiotApiClient riotApiClient, MatchRepository matchRepository, PlayerRepository playerRepository, MatchParticipantRepository matchParticipantRepository, UserRepository userRepository) {
         this.riotApiClient = riotApiClient;
         this.matchRepository = matchRepository;
         this.playerRepository = playerRepository;
         this.matchParticipantRepository = matchParticipantRepository;
+        this.userRepository = userRepository;
     }
 
     public RiotAccountResponse getAccountByRiotId(String gameName, String tagLine) {
@@ -70,14 +76,17 @@ public class RiotImportService {
                 .toList();
     }
 
-    // TODO Phase 6.5:
-    // MatchEntity global pro Riot-Match speichern
-    // und MatchParticipantEntity pro (match, player) speichern.
     public ImportMatchesResponse importRecentMatches(String gameName, String tagLine, int count) {
         int skipped = 0;
         int imported = 0;
         RiotAccountResponse account = getAccountByRiotId(gameName, tagLine);
         String puuid = account.getPuuid();
+        PlayerEntity player = getOrCreatePlayer(account);
+        if(player.getUser() == null) {
+            UserEntity user = getCurrentUser();
+            player.setUser(user);
+            playerRepository.save(player);
+        }
         List<String> matchIds = riotApiClient.getMatchIdsByPuuid(puuid, count);
         for (String matchId : matchIds) {
             if(importMatchIfNotExists(puuid, matchId)) {
@@ -158,6 +167,19 @@ public class RiotImportService {
                                 tagLine != null ? tagLine : "XX"
                         )
                 ));
+    }
+
+    private String getCurrentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+    private UserEntity getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    private UserEntity getCurrentUser() {
+        return getUserByEmail(getCurrentUserEmail());
     }
 
 }
