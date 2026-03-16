@@ -1,6 +1,7 @@
 package ch.niklas409.riftvision.service;
 
 import ch.niklas409.riftvision.domain.entity.MatchParticipantEntity;
+import ch.niklas409.riftvision.domain.entity.UserEntity;
 import ch.niklas409.riftvision.dto.request.MatchRequest;
 import ch.niklas409.riftvision.dto.response.MatchDetailsResponse;
 import ch.niklas409.riftvision.dto.response.MatchParticipantResponse;
@@ -13,6 +14,9 @@ import ch.niklas409.riftvision.domain.entity.PlayerEntity;
 import ch.niklas409.riftvision.repository.MatchParticipantRepository;
 import ch.niklas409.riftvision.repository.MatchRepository;
 import ch.niklas409.riftvision.repository.PlayerRepository;
+import ch.niklas409.riftvision.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,12 +31,14 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final MatchMapper matchMapper;
     private final MatchParticipantRepository matchParticipantRepository;
+    private final UserRepository userRepository;
 
-    public MatchService(PlayerRepository playerRepository, MatchRepository matchRepository, MatchMapper matchMapper, MatchParticipantRepository matchParticipantRepository) {
+    public MatchService(PlayerRepository playerRepository, MatchRepository matchRepository, MatchMapper matchMapper, MatchParticipantRepository matchParticipantRepository, UserRepository userRepository) {
         this.playerRepository = playerRepository;
         this.matchRepository = matchRepository;
         this.matchMapper = matchMapper;
         this.matchParticipantRepository = matchParticipantRepository;
+        this.userRepository = userRepository;
     }
     // LEGACY (Phase 1/2):
     // Manueller Match-Create aus dem ursprünglichen lokalen MVP.
@@ -43,7 +49,16 @@ public class MatchService {
     }
 
     public List<MatchResponse> getAllMatches() {
-        return matchRepository.findAll().stream().map(matchMapper::toResponse).toList();
+        List<MatchEntity> matches = new ArrayList<>();
+        List<PlayerEntity> players = getCurrentUserPlayers();
+        for(PlayerEntity player : players) {
+            for(MatchParticipantEntity participant : matchParticipantRepository.findByPlayer(player)) {
+                if(!matches.contains(participant.getMatch())) {
+                    matches.add(participant.getMatch());
+                }
+            }
+        }
+        return matches.stream().map(matchMapper::toResponse).toList();
     }
 
     public PlayerStatsResponse calculateStats(String playerId) {
@@ -79,6 +94,24 @@ public class MatchService {
         return new MatchDetailsResponse(match.getMatchId(),
                 match.getPlayedAt(),
                 participants);
+    }
+
+    private String getCurrentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+    private UserEntity getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    private UserEntity getCurrentUser() {
+        return getUserByEmail(getCurrentUserEmail());
+    }
+
+    private List<PlayerEntity> getCurrentUserPlayers() {
+        UserEntity user = getCurrentUser();
+        return playerRepository.findAllByUser(user);
     }
 
 }

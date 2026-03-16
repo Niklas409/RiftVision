@@ -2,6 +2,9 @@ package ch.niklas409.riftvision.domain.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "users")
 public class UserEntity {
@@ -19,6 +22,9 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "user")
+    private List<PlayerEntity> players = new ArrayList<>();
 
     public UserEntity(String email, String password, Role role) {
         this.email = email;
@@ -45,6 +51,10 @@ public class UserEntity {
         return role;
     }
 
+    public List<PlayerEntity> getPlayers() {
+        return players;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -55,5 +65,9 @@ public class UserEntity {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void setPlayers(List<PlayerEntity> players) {
+        this.players = players;
     }
 }
