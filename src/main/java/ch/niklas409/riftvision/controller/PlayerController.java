@@ -32,12 +32,6 @@ public class PlayerController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<PlayerResponse> createPlayer(@Valid @RequestBody PlayerRequest request) {
-        return ApiResponse.success(playerService.createPlayer(request));
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<PlayerResponse> linkAccount(@Valid @RequestBody AddPlayerRequest request) {
         return ApiResponse.success(playerService.addPlayerToUser(request));
     }

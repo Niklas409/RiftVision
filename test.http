@@ -207,3 +207,27 @@ Authorization: Bearer {{studentJwt}}
 ### Delete task
 DELETE {{baseUrl}}/coach/tasks/1
 Authorization: Bearer {{coachJwt}}
+
+### ========================================
+### PLAYERS
+### ========================================
+
+### Link Riot account to current user
+POST {{baseUrl}}/players
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+  "gameName": "Niklas409",
+  "tagLine": "0409"
+}
+
+### Link second Riot account to current user
+POST {{baseUrl}}/players
+Authorization: Bearer {{jwt}}
+Content-Type: application/json
+
+{
+  "gameName": "Jannes409",
+  "tagLine": "EUW"
+}
