@@ -1,294 +1,253 @@
-
 # RiftVision – Progress
 
 ---
 
 ## 📌 Gesamt-Roadmap
 
-* Phase 0 – Foundation ✅
-* Phase 1 – REST MVP (In-Memory) ✅
-* Phase 2 – Database (PostgreSQL + JPA) ✅
-* Phase 3 – Clean Architecture & API Standards ✅
-* Phase 4 – Security (JWT) ✅
-* Phase 5 – Riot API Integration ✅
-* Phase 6 – Coach Layer ✅
-* Phase 6.5 – Match Model Refactor ✅
-* Phase 7 – Production ⏳
+- Phase 0 – Foundation ✅
+- Phase 1 – REST MVP (In-Memory) ✅
+- Phase 2 – Database (PostgreSQL + JPA) ✅
+- Phase 3 – Clean Architecture & API Standards ✅
+- Phase 4 – Security (JWT) ✅
+- Phase 5 – Riot API Integration ✅
+- Phase 6 – Coach Layer ✅
+- Phase 6.5 – Match Model Refactor ✅
+- Phase 6.6 – Match Details Endpoint ✅
+- Phase 6.7 – Role Management (Admin) ✅
+- Phase 6.8 – Riot Account Linking System ✅
+- Phase 7 – Production / Hardening ⏳
+- Frontend MVP – gestartet ⏳
 
 ---
 
-## 🚀 Aktueller Stand
+## 🚀 Aktueller Projektstand
 
-Backend ist vollständig funktionsfähig mit:
+RiftVision ist inzwischen deutlich mehr als nur eine Backend-Übungs-App.
 
-- Persistenter PostgreSQL-Datenbank (Docker)
-- JPA Entities & Relation (Player ↔ Match)
-- Saubere DTO-Trennung (Request / Response)
-- Mapper Pattern (Entity → DTO)
-- Global Exception Handling
-- 409 Conflict Handling bei Duplicate
-- Konsistente API-Naming-Strategie (`playerId`)
-- Gerundete KDA-Berechnung
-- Einheitliche ApiResponse-Hülle
-- Spring Security mit JWT Authentication
-- Passwort-Hashing mit BCrypt
-- Register / Login Flow
-- Geschützte Endpoints mit JWT
-- Konsistente 401 Unauthorized Responses
-- Riot API Client mit separatem `client/riot` Package
-- Riot DTOs sauber getrennt unter `dto/riot/response`
-- Riot Account Lookup (`gameName` + `tagLine` → `puuid`)
-- Match-ID Lookup via PUUID
-- Match-Detail Lookup via Riot Match V5
-- Extraktion spielerbezogener Match-Stats
-- Eigenes internes DTO `PlayerMatchStatsResponse`
-- Recent Stats Endpoint für mehrere Riot-Matches
-- Persistenter Riot-Import in PostgreSQL
-- Import Response mit `imported` / `skipped`
-- Query Parameter `count` für flexiblen Import
+Aktuell vorhanden:
+
+### Backend
+
+- funktionierende JWT Authentication
+- Rollen-System (`USER`, `COACH`, `ADMIN`)
+- Riot API Integration mit persistentem Import
+- globales Multiplayer-Match-Modell
+- Coach/Student-Beziehungsmodell
+- Notes- und Task-System für Coaching-Workflows
+- Account-Linking-System für mehrere Riot-Accounts pro User
+- persönliche Match-Liste scoped auf verknüpfte Riot-Accounts
+- konsistente API-Response-Hülle und Exception Handling
+
+### Frontend
+
+- React + Vite Projekt im Monorepo ergänzt
+- Register-View
+- Login-View
+- JWT-Speicherung im Local Storage
+- authentifizierte Match-Liste
 
 ---
 
-# ✅ Abgeschlossen
+## ✅ Abgeschlossene Arbeit nach Phasen
 
 ---
 
 ## Phase 0 – Foundation
 
-* Clean Package-Struktur
-* GET `/health`
-* Constructor Injection
-* Gradle Build Verständnis
+Abgeschlossen:
+
+- Package-Struktur erstellt
+- `GET /health`
+- Constructor Injection eingeführt
+- Gradle-Projektsetup verstanden
 
 ---
 
-## Phase 1 – REST MVP
+## Phase 1 – REST MVP (In-Memory)
 
-* Match Domain
-* In-Memory Speicherung
-* Stats Aggregation mit Streams
-* Defensive Programming
-* Validation
-* Service-Layer eingeführt
+Abgeschlossen:
+
+- frühe Match-Domain
+- In-Memory Speicherung
+- Stats-Aggregation
+- Validation-Basics
+- erste Service-Layer-Struktur
 
 ---
 
 ## Phase 2 – Database Layer
 
-* PostgreSQL via Docker Compose
-* `PlayerEntity`
-  - unique `playerId`
-* `MatchEntity`
-  - ManyToOne Relation zu Player
-* JPA Repository Pattern
-* Persistente Speicherung
-* DB-basierte Stats-Berechnung
-* Hibernate Lifecycle verstanden
-* DB Reset via Docker Volumes
+Abgeschlossen:
+
+- PostgreSQL via Docker Compose
+- JPA Repositories eingeführt
+- persistente Player-Speicherung
+- persistente Match-Speicherung
+- datenbankbasierte Stats-Berechnung
+- Hibernate Lifecycle besser verstanden
+- lokaler DB-Reset-Workflow geübt
 
 ---
 
-## Phase 3 – Clean Architecture
+## Phase 3 – Clean Architecture & API Standards
 
-* Entities werden **nicht** direkt exposed
-* Einführung von:
-  - `PlayerRequest`
-  - `PlayerResponse`
-  - `MatchRequest`
-  - `MatchResponse`
-  - `PlayerStatsResponse`
-* `PlayerMapper`
-* `MatchMapper`
-* Controller nur DTO-basierte Kommunikation
-* GlobalExceptionHandler erweitert:
-  - 400 Validation
-  - 404 ResourceNotFound
-  - 409 DataIntegrityViolation
-  - 500 Fallback
-* Konsistente API-Namensgebung (`playerId`)
-* KDA sauber auf 2 Nachkommastellen gerundet
+Abgeschlossen:
+
+- Entities werden nicht mehr direkt exposed
+- DTO-basierte Controller-Kommunikation
+- Mapper-Layer eingeführt
+- `ApiResponse<T>` Wrapper eingeführt
+- Global Exception Handling verbessert
+- konsistente API-Namensgebung mit `playerId`
+- KDA-Rundung verbessert
+
+Eingeführte / genutzte DTOs:
+
+- `PlayerRequest`
+- `PlayerResponse`
+- `MatchRequest`
+- `MatchResponse`
+- `PlayerStatsResponse`
 
 ---
 
 ## Phase 4 – Security (JWT)
 
-* `UserEntity` eingeführt
-* `Role` Enum (`USER`, `ADMIN`, `COACH`)
-* `UserRepository`
-* Register Endpoint `/auth/register`
-* Login Endpoint `/auth/login`
-* Passwort-Hashing mit BCrypt
-* `JwtService`
-* `JwtAuthenticationFilter`
-* `CustomUserDetailsService`
-* `SecurityConfig` mit geschützten Endpoints
-* Stateless Authentication mit JWT
-* Custom 401 Unauthorized Response
+Abgeschlossen:
+
+- `UserEntity` eingeführt
+- `Role` Enum mit `USER`, `COACH`, `ADMIN`
+- `UserRepository`
+- Register Endpoint
+- Login Endpoint
+- BCrypt Passwort-Hashing
+- JWT Service
+- JWT Authentication Filter
+- Custom User Details Service
+- stateless Security Config
+- Custom 401 Response
+- Custom AccessDenied Handling
+- CORS für lokales Frontend
 
 ---
 
 ## Phase 5 – Riot API Integration
 
-* `RiotApiProperties` mit Environment Variable für API Key
-* `RiotApiClient` in separatem `client/riot` Package
-* Riot Account Endpoint angebunden
-* Riot Match IDs Endpoint angebunden
-* Riot Match Detail Endpoint angebunden
-* DTO-Mapping für Riot Account Response
-* DTO-Mapping für Riot Match Response (`metadata`, `info`, `participants`)
-* `RiotImportService` als Orchestrierungs-Layer eingeführt
-* Interne Riot Endpoints:
-  - `/internal/riot/{gameName}/{tagLine}`
-  - `/internal/riot/matches/{gameName}/{tagLine}`
-  - `/internal/riot/recent-stats/{gameName}/{tagLine}`
-  - `/internal/riot/import/{gameName}/{tagLine}?count=...`
-* Participant-Findung per `puuid` über Streams
-* Eigenes internes Stats-DTO `PlayerMatchStatsResponse`
-* `matchId` in `MatchEntity` ergänzt
-* `existsByMatchId(...)` im `MatchRepository`
-* `getOrCreatePlayer(...)` für Riot-Import
-* Import einzelner Matches nur wenn noch nicht vorhanden
-* Import Response DTO `ImportMatchesResponse`
-* Query Parameter `count` für flexiblen Import
-* Matches erfolgreich in PostgreSQL importiert
+Abgeschlossen:
+
+- `RiotApiClient` eingeführt
+- Riot API Properties / Config ergänzt
+- Riot Account Lookup Endpoint
+- Riot Match-ID Lookup Endpoint
+- Riot Match-Detail Lookup Endpoint
+- Riot DTO Mapping unter `dto/riot/response`
+- `RiotImportService` als Orchestrierungs-Layer eingeführt
+- internes Stats-DTO `PlayerMatchStatsResponse`
+- persistenter Riot-Import in PostgreSQL
+- Import-Response mit `imported` / `skipped`
+- Query Parameter `count` für flexible Import-Größe
+
+Implementierte interne Endpoints:
+
+- `GET /internal/riot/{gameName}/{tagLine}`
+- `GET /internal/riot/matches/{gameName}/{tagLine}`
+- `GET /internal/riot/recent-stats/{gameName}/{tagLine}`
+- `POST /internal/riot/import/{gameName}/{tagLine}?count=...`
 
 ---
 
-## 🏗 Aktuelle Architektur
+## Phase 6 – Coach Layer
 
-* client/riot
-* controller
-* dto
-* dto/riot/response
-* exception
-* mapper
-* domain/entity
-* repository
-* service
-* config
-* security
+Abgeschlossen:
 
-Layer-Struktur:
+### Coach ↔ Student Relation
 
-Controller → Service → Client / Entity → Repository → DB / External API
+Domain:
 
-Security Flow:
-
-Request → JWT Filter → UserDetailsService → SecurityContext → Controller
-
----
-
-# 🚀 Phase 6 – Coach Layer (Completed)
-
-Der Coach Layer erweitert RiftVision um echte Coaching-Funktionalität für Spielerentwicklung.
-
-Ziel:
-Spieler können einem Coach zugeordnet werden und Coaches können Matches ihrer Spieler analysieren und Trainingsaufgaben vergeben.
-
----
-
-## Coach ↔ Student Relation
-
-Neue Domain:
-`CoachClientRelationEntity`
+- `CoachClientRelationEntity`
 
 Features:
 
-- Coach kann Studenten zuweisen
-- Studenten eines Coaches abrufen
-- Studenten von Coach entfernen
-- Duplicate Relations werden verhindert
-- Self‑Coaching wird verhindert
+- Student einem Coach zuweisen
+- Students eines Coaches abrufen
+- Students von Coach entfernen
+- Duplicate Relations verhindern
+- Self-Coaching verhindern
 
 Endpoints:
 
-POST `/coach/students/{studentId}`  
-GET `/coach/students`  
-DELETE `/coach/students/{studentId}`
+- `POST /coach/students/{studentId}`
+- `GET /coach/students`
+- `DELETE /coach/students/{studentId}`
 
----
-
-## Match Notes (Coaching Kontext)
-
-Coaches können Notizen zu Matches ihrer Studenten erstellen.
+### Match Notes
 
 Domain:
-`NoteEntity`
+
+- `NoteEntity`
 
 Features:
 
-- Create Note
-- Get Notes für ein Match
-- Update Note
-- Delete Note
-- Ownership Checks (Coach darf nur eigene Notes bearbeiten)
+- Note erstellen
+- Notes für Match + Student abrufen
+- Note aktualisieren
+- Note löschen
+- Ownership-Checks für Coach-Zugriff
 
 Endpoints:
 
-POST `/coach/matches/{matchId}/notes`  
-GET `/coach/matches/{matchId}/notes`  
-PUT `/coach/notes/{noteId}`  
-DELETE `/coach/notes/{noteId}`
+- `POST /coach/matches/{matchId}/notes`
+- `GET /coach/matches/{matchId}/notes`
+- `PUT /coach/notes/{noteId}`
+- `DELETE /coach/notes/{noteId}`
 
----
-
-## Player Tasks / Trainingsaufgaben
-
-Coaches können Trainingsaufgaben für Spieler erstellen.
+### Player Tasks
 
 Domain:
-`TaskEntity`
 
-Attribute:
-
-- id
-- coach
-- student
-- description
-- completed
-- createdAt
+- `TaskEntity`
 
 Features:
 
 Coach:
 
-- Create Task
-- Update Task
-- Delete Task
-- Get Tasks for Student
+- Task erstellen
+- Tasks eines Students abrufen
+- Task aktualisieren
+- Task löschen
 
 Student:
 
-- Complete Task
-- Uncomplete Task
+- Task auf erledigt setzen
+- Task wieder auf unerledigt setzen
 
 Endpoints:
 
-POST `/coach/students/{studentId}/tasks`  
-GET `/students/{studentId}/tasks`  
-PUT `/coach/tasks/{taskId}`  
-DELETE `/coach/tasks/{taskId}`  
-PATCH `/tasks/{taskId}/complete`  
-PATCH `/tasks/{taskId}/uncomplete`
+- `POST /coach/students/{studentId}/tasks`
+- `GET /coach/students/{studentId}/tasks`
+- `PUT /coach/tasks/{taskId}`
+- `DELETE /coach/tasks/{taskId}`
+- `PATCH /tasks/{taskId}/complete`
+- `PATCH /tasks/{taskId}/uncomplete`
 
 ---
 
+## Phase 6.5 – Match Model Refactor
 
+Abgeschlossen:
 
----
-
-## Phase 6.5 – Match Model Refactor (Completed)
-
-Das ursprüngliche player-zentrierte Match-Modell wurde auf ein sauberes Multiplayer-Modell refactored.
+Das alte player-zentrierte Match-Modell wurde durch ein saubereres Multiplayer-Modell ersetzt.
 
 Neue Domain:
 
-`MatchEntity`
+### `MatchEntity`
+
 - globales Riot Match
-- unique `matchId`
+- eindeutige `matchId`
 - `playedAt`
 
-`MatchParticipantEntity`
+### `MatchParticipantEntity`
+
 - referenziert `MatchEntity`
 - referenziert `PlayerEntity`
 - champion
@@ -297,78 +256,66 @@ Neue Domain:
 - assists
 - win
 
-Umgesetzt:
+Abgeschlossene Arbeit:
 
 - Einführung von `MatchParticipantEntity`
 - `MatchEntity` auf globales Match-Modell reduziert
-- Speicherung aller 10 Spieler pro Riot Match
-- Riot Import speichert jetzt vollständige Match Participants
+- Speicherung aller 10 Spieler eines Riot-Matches
+- Riot-Import speichert vollständige Match-Participants
 - automatische Player-Erstellung über `getOrCreatePlayer(...)`
 - Speicherung von RiotId (`gameName` + `tagLine`) beim Player-Import
-- Stats-Berechnung refactored → nutzt jetzt `MatchParticipantEntity`
+- Stats-Berechnung refactored auf Basis von `MatchParticipantEntity`
 - `MatchRepository` von alter Player-Query bereinigt
 - `MatchResponse` / `MatchMapper` auf neues Match-Modell angepasst
 
+---
 
-## Phase 6.6 – Match Analytics Endpoint (Completed)
+## Phase 6.6 – Match Details Endpoint
 
-Neuer Analyse-Endpoint für Match Details wurde implementiert.
+Abgeschlossen:
 
 Ziel:
-Ein komplettes Riot Match mit allen 10 Participants abrufen können.
-Dies bildet die Grundlage für spätere Coaching-Analysen und Frontend-Match-Views.
+Ein komplettes Riot Match mit allen 10 Participants abrufen können. Das bildet die Grundlage für spätere Coaching-Analysen und Frontend-Match-Views.
 
 Endpoint:
 
-GET `/matches/{matchId}`
+- `GET /matches/{matchId}`
 
 Response enthält:
 
-- matchId
-- playedAt
-- participants (alle 10 Spieler)
+- `matchId`
+- `playedAt`
+- `participants` (alle 10 Spieler)
 
-Neues Response Modell:
+Neue Response-Modelle:
 
-MatchDetailsResponse
-- matchId
-- playedAt
-- List<MatchParticipantResponse>
-
-MatchParticipantResponse
-- playerId
-- playerName
-- champion
-- kills
-- deaths
-- assists
-- win
+- `MatchDetailsResponse`
+- `MatchParticipantResponse`
 
 Umsetzung:
 
-- Neuer Service Endpoint `getMatchByMatchId(...)`
+- neuer Service-Endpoint `getMatchByMatchId(...)`
 - Mapping von `MatchParticipantEntity` → `MatchParticipantResponse`
-- Lazy Loading Problem mit `@Transactional` gelöst
-- Controller Endpoint `GET /matches/{matchId}` hinzugefügt
-- Erweiterung der HTTP Test Suite
+- Lazy-Loading Problem mit `@Transactional` gelöst
+- Controller Endpoint `GET /matches/{matchId}` ergänzt
+- HTTP-Testsuite erweitert
 
 Ergebnis:
 
-Match Details API liefert vollständige Riot Match Daten inkl. aller Participants.
+Match-Details API liefert vollständige Riot-Match-Daten inklusive aller Participants.
 
 ---
 
-
 ## Phase 6.7 – Role Management (Admin)
 
-Admin-Funktionalität für Rollenverwaltung hinzugefügt.
+Abgeschlossen:
 
 Ziel:
 Coaches sollen nicht automatisch entstehen, sondern bewusst freigeschaltet werden.
 
 Admin Endpoint:
 
-POST `/internal/admin/users/{userId}/make-coach`
+- `POST /internal/admin/users/{userId}/make-coach`
 
 Features:
 
@@ -378,7 +325,7 @@ Features:
 
 Security:
 
-`@PreAuthorize("hasRole('ADMIN')")`
+- `@PreAuthorize("hasRole('ADMIN')")`
 
 Tests:
 
@@ -388,31 +335,141 @@ Tests:
 
 Ergebnis:
 
-Rollenverwaltung für Coaches ist jetzt kontrolliert möglich.
+Rollenverwaltung für Coaches ist kontrolliert möglich.
+
+---
+
+## Phase 6.8 – Riot Account Linking System
+
+Abgeschlossen:
+
+Ziel:
+Riot-Accounts flexibel mit Plattform-Usern verknüpfen, ohne einen Riot-Account exklusiv genau einem User zuzuordnen.
+
+Neue Domain:
+
+### `UserPlayerLinkEntity`
+
+Verknüpft:
+
+- `UserEntity`
+- `PlayerEntity`
+- `linkedAt`
+
+Neue Struktur:
+
+```text
+User
+  ↓
+UserPlayerLink
+  ↓
+Player
+```
+
+Ergebnis des Refactors:
+
+- alte direkte `Player -> User` Beziehung entfernt
+- neue Many-to-Many-artige Verknüpfung über eigene Link-Entity
+- mehrere Riot-Accounts pro User möglich
+- mehrere User können denselben Riot-Account referenzieren
+- Faker-/Claim-Problem deutlich entschärft
+- flexiblere Basis für spätere Coach-/Team-Usecases
+
+Neue / angepasste Features:
+
+- Riot-Account zum aktuellen User verknüpfen
+- verknüpfte Accounts des aktuellen Users abrufen
+- Account-Link des aktuellen Users löschen
+- Match-Abfragen auf verknüpfte Accounts umgebaut
+
+Neue / angepasste Endpoints:
+
+- `POST /players`
+- `GET /players`
+- `DELETE /players/{playerId}`
+
+Technische Änderungen:
+
+- `UserPlayerLinkEntity` eingeführt
+- `UserPlayerLinkRepository` eingeführt
+- `PlayerService` auf Link-Modell umgebaut
+- `MatchService` lädt Player jetzt über `UserPlayerLink`
+- alter direkter `Player.user` Zugriff entfernt
+- alter `findAllByUser(...)` Zugriff im `PlayerRepository` entfernt
+
+---
+
+## Frontend MVP – gestartet
+
+Aktueller Stand:
+
+- React + Vite Projekt angelegt
+- Login-Formular
+- Register-Formular
+- JWT im Local Storage
+- Logout-Flow
+- Match-Liste für eingeloggten User
+
+Ziel des nächsten Frontend-Schritts:
+
+- verknüpfte Accounts anzeigen
+- Import-Flow im Frontend nutzbar machen
+- Match-Details-View bauen
+- später Notes und Tasks einbinden
+
+---
+
+## 🏗 Aktuelle Architektur
+
+Packages:
+
+- `client/riot`
+- `controller`
+- `dto`
+- `dto/riot/response`
+- `exception`
+- `mapper`
+- `domain/entity`
+- `repository`
+- `service`
+- `config`
+- `security`
+
+Layer-Struktur:
+
+```text
+Controller → Service → Client / Entity → Repository → DB / External API
+```
+
+Security Flow:
+
+```text
+Request → JWT Filter → UserDetailsService → SecurityContext → Controller
+```
 
 ---
 
 ## 🎯 Nächster Fokus
 
-Frontend MVP starten.
+Sinnvolle nächste Schritte:
 
-Geplante erste Frontend-Views:
+1. Frontend für verknüpfte Accounts
+2. Import-Flow im Frontend
+3. Match-Detail-View
+4. Match-Import weiter härten / besser auf verknüpfte Accounts abstimmen
+5. später Production Readiness
 
-1. Login Page
-2. Dashboard
-3. Riot Import
-4. Match List
-5. Match Detail (Participants + Notes + Tasks)
-
-Ziel:
-
-Backend-Flow erstmals komplett im Frontend nutzbar machen.
+---
 
 ## 📊 Projekt-Level
 
-- echter externer API Integration
+RiftVision zeigt inzwischen praktische Arbeit mit:
+
+- echter externer API-Integration
 - Security Layer (JWT)
-- Coaching Domain Modell
-- relationaler Datenbank
+- relationaler Datenmodellierung
+- Coaching-Domain-Modell
+- Account-Linking-Architektur
 - sauberen REST APIs
-- Docker Datenbank Setup
+- Docker-Datenbank-Setup
+- React-Frontend-Basis

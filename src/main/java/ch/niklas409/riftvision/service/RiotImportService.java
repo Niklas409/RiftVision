@@ -1,20 +1,14 @@
 package ch.niklas409.riftvision.service;
 
 import ch.niklas409.riftvision.client.riot.RiotApiClient;
-import ch.niklas409.riftvision.domain.entity.MatchEntity;
-import ch.niklas409.riftvision.domain.entity.MatchParticipantEntity;
-import ch.niklas409.riftvision.domain.entity.PlayerEntity;
-import ch.niklas409.riftvision.domain.entity.UserEntity;
+import ch.niklas409.riftvision.domain.entity.*;
 import ch.niklas409.riftvision.dto.response.ImportMatchesResponse;
 import ch.niklas409.riftvision.dto.response.PlayerMatchStatsResponse;
 import ch.niklas409.riftvision.dto.riot.response.RiotAccountResponse;
 import ch.niklas409.riftvision.dto.riot.response.RiotMatchResponse;
 import ch.niklas409.riftvision.dto.riot.response.RiotParticipantResponse;
 import ch.niklas409.riftvision.exception.ResourceNotFoundException;
-import ch.niklas409.riftvision.repository.MatchParticipantRepository;
-import ch.niklas409.riftvision.repository.MatchRepository;
-import ch.niklas409.riftvision.repository.PlayerRepository;
-import ch.niklas409.riftvision.repository.UserRepository;
+import ch.niklas409.riftvision.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,13 +24,15 @@ public class RiotImportService {
     private final PlayerRepository playerRepository;
     private final MatchParticipantRepository matchParticipantRepository;
     private final UserRepository userRepository;
+    private final UserPlayerLinkRepository userPlayerLinkRepository;
 
-    public RiotImportService(RiotApiClient riotApiClient, MatchRepository matchRepository, PlayerRepository playerRepository, MatchParticipantRepository matchParticipantRepository, UserRepository userRepository) {
+    public RiotImportService(RiotApiClient riotApiClient, MatchRepository matchRepository, PlayerRepository playerRepository, MatchParticipantRepository matchParticipantRepository, UserRepository userRepository, UserPlayerLinkRepository userPlayerLinkRepository) {
         this.riotApiClient = riotApiClient;
         this.matchRepository = matchRepository;
         this.playerRepository = playerRepository;
         this.matchParticipantRepository = matchParticipantRepository;
         this.userRepository = userRepository;
+        this.userPlayerLinkRepository = userPlayerLinkRepository;
     }
 
     public RiotAccountResponse getAccountByRiotId(String gameName, String tagLine) {
@@ -82,10 +78,9 @@ public class RiotImportService {
         RiotAccountResponse account = getAccountByRiotId(gameName, tagLine);
         String puuid = account.getPuuid();
         PlayerEntity player = getOrCreatePlayer(account);
-        if(player.getUser() == null) {
-            UserEntity user = getCurrentUser();
-            player.setUser(user);
-            playerRepository.save(player);
+        UserEntity user = getCurrentUser();
+        if(!userPlayerLinkRepository.existsByUserAndPlayer(user, player)) {
+            userPlayerLinkRepository.save(new UserPlayerLinkEntity(user, player, Instant.now()));
         }
         List<String> matchIds = riotApiClient.getMatchIdsByPuuid(puuid, count);
         for (String matchId : matchIds) {

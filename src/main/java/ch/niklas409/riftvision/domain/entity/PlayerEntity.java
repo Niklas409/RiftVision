@@ -19,10 +19,6 @@ public class PlayerEntity {
     @Column(nullable = false)
     private String region;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
     protected PlayerEntity() {
     }
 
@@ -48,10 +44,6 @@ public class PlayerEntity {
         return region;
     }
 
-    public UserEntity getUser() {
-        return user;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -68,7 +60,4 @@ public class PlayerEntity {
         this.region = region;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
 }

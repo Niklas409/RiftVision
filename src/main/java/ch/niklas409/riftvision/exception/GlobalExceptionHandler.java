@@ -110,10 +110,4 @@ public class GlobalExceptionHandler {
         return new ApiErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage(), List.of(), request.getRequestURI());
     }
 
-    @ExceptionHandler(PlayerAlreadyAssignedException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiErrorResponse handlePlayerAlreadyAssignedException(PlayerAlreadyAssignedException exception, HttpServletRequest request) {
-        return new ApiErrorResponse(HttpStatus.CONFLICT.value(), exception.getMessage(), List.of(), request.getRequestURI());
-    }
-
 }

@@ -2,7 +2,7 @@
 
 @email = niklas@test.com
 @password = 123456
-@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtsYXNAdGVzdC5jb20iLCJpYXQiOjE3NzM2NjcyNTYsImV4cCI6MTc3MzY3MDg1Nn0.6Ctck-OLjj-yg_G3gZQj0O3e5JyArGQTZ2exdBVGRbE
+@jwt = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuaWtsYXNAdGVzdC5jb20iLCJpYXQiOjE3NzM2ODI3MTIsImV4cCI6MTc3MzY4NjMxMn0.aU1QXjlb-gQuo77BoZr7kAhMqilAvcT-pxy2ZDER0sE
 
 @coachEmail = coach@test.com
 @coachPassword = 123456
@@ -231,3 +231,11 @@ Content-Type: application/json
   "gameName": "Jannes409",
   "tagLine": "EUW"
 }
+
+### Get linked riot accounts
+GET {{baseUrl}}/players
+Authorization: Bearer {{jwt}}
+
+### Remove linked Riot account
+DELETE {{baseUrl}}/players/eNSDERYGQWC8Cxi68aH1dhXJUlHKQvlT5E2FU9IpmVEvl0M7JjNnChPXYjm-oYADjDqeKFSnyWaMCg
+Authorization: Bearer {{jwt}}

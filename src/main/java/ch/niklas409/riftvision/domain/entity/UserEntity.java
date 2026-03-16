@@ -23,9 +23,6 @@ public class UserEntity {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    private List<PlayerEntity> players = new ArrayList<>();
-
     public UserEntity(String email, String password, Role role) {
         this.email = email;
         this.password = password;
@@ -51,10 +48,6 @@ public class UserEntity {
         return role;
     }
 
-    public List<PlayerEntity> getPlayers() {
-        return players;
-    }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -67,7 +60,4 @@ public class UserEntity {
         this.role = role;
     }
 
-    public void setPlayers(List<PlayerEntity> players) {
-        this.players = players;
-    }
 }

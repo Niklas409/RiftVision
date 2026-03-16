@@ -10,6 +10,5 @@ import java.util.Optional;
 public interface PlayerRepository extends JpaRepository<PlayerEntity, Long> {
 
     Optional<PlayerEntity> findByPlayerId(String playerId);
-    List<PlayerEntity> findAllByUser(UserEntity user);
 
 }

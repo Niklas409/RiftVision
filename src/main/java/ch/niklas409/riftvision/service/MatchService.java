@@ -1,7 +1,6 @@
 package ch.niklas409.riftvision.service;
 
-import ch.niklas409.riftvision.domain.entity.MatchParticipantEntity;
-import ch.niklas409.riftvision.domain.entity.UserEntity;
+import ch.niklas409.riftvision.domain.entity.*;
 import ch.niklas409.riftvision.dto.request.MatchRequest;
 import ch.niklas409.riftvision.dto.response.MatchDetailsResponse;
 import ch.niklas409.riftvision.dto.response.MatchParticipantResponse;
@@ -9,12 +8,7 @@ import ch.niklas409.riftvision.dto.response.MatchResponse;
 import ch.niklas409.riftvision.dto.response.PlayerStatsResponse;
 import ch.niklas409.riftvision.exception.ResourceNotFoundException;
 import ch.niklas409.riftvision.mapper.MatchMapper;
-import ch.niklas409.riftvision.domain.entity.MatchEntity;
-import ch.niklas409.riftvision.domain.entity.PlayerEntity;
-import ch.niklas409.riftvision.repository.MatchParticipantRepository;
-import ch.niklas409.riftvision.repository.MatchRepository;
-import ch.niklas409.riftvision.repository.PlayerRepository;
-import ch.niklas409.riftvision.repository.UserRepository;
+import ch.niklas409.riftvision.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,13 +26,15 @@ public class MatchService {
     private final MatchMapper matchMapper;
     private final MatchParticipantRepository matchParticipantRepository;
     private final UserRepository userRepository;
+    private final UserPlayerLinkRepository userPlayerLinkRepository;
 
-    public MatchService(PlayerRepository playerRepository, MatchRepository matchRepository, MatchMapper matchMapper, MatchParticipantRepository matchParticipantRepository, UserRepository userRepository) {
+    public MatchService(PlayerRepository playerRepository, MatchRepository matchRepository, MatchMapper matchMapper, MatchParticipantRepository matchParticipantRepository, UserRepository userRepository, UserPlayerLinkRepository userPlayerLinkRepository) {
         this.playerRepository = playerRepository;
         this.matchRepository = matchRepository;
         this.matchMapper = matchMapper;
         this.matchParticipantRepository = matchParticipantRepository;
         this.userRepository = userRepository;
+        this.userPlayerLinkRepository = userPlayerLinkRepository;
     }
     // LEGACY (Phase 1/2):
     // Manueller Match-Create aus dem ursprünglichen lokalen MVP.
@@ -110,8 +106,12 @@ public class MatchService {
     }
 
     private List<PlayerEntity> getCurrentUserPlayers() {
+        List<PlayerEntity> players = new ArrayList<>();
         UserEntity user = getCurrentUser();
-        return playerRepository.findAllByUser(user);
+        for(UserPlayerLinkEntity userPlayerLink : userPlayerLinkRepository.findAllByUser(user)) {
+            players.add(userPlayerLink.getPlayer());
+        }
+        return players;
     }
 
 }

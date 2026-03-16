@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
@@ -34,6 +36,17 @@ public class PlayerController {
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResponse<PlayerResponse> linkAccount(@Valid @RequestBody AddPlayerRequest request) {
         return ApiResponse.success(playerService.addPlayerToUser(request));
+    }
+
+    @GetMapping
+    public ApiResponse<List<PlayerResponse>> getAccountLinks() {
+        return ApiResponse.success(playerService.getLinkedPlayersForCurrentUser());
+    }
+
+    @DeleteMapping("/{playerId}")
+    public ApiResponse<Void> removeAccountLink(@PathVariable String playerId) {
+        playerService.removePlayerFromCurrentUser(playerId);
+        return ApiResponse.success(null);
     }
 
 }
