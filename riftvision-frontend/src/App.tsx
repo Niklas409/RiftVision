@@ -3,15 +3,21 @@ import "./App.css";
 import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import MatchList from "./components/MatchList";
+import LinkedAccountsList from "./components/LinkedAccountsList";
 
 function App() {
   const [showRegister, setShowRegister] = useState(false);
+  const [matchRefreshKey, setMatchRefreshKey] = useState(0);
 
   const token = localStorage.getItem("token");
 
   function handleLogout() {
     localStorage.removeItem("token");
     window.location.reload();
+  }
+
+  function handleMatchesImported() {
+    setMatchRefreshKey((prev) => prev + 1);
   }
 
   if (token) {
@@ -24,7 +30,12 @@ function App() {
           Logout
         </button>
 
-        <MatchList token={token} />
+        <LinkedAccountsList
+          token={token}
+          onImportSuccess={handleMatchesImported}
+        />
+
+        <MatchList token={token} refreshKey={matchRefreshKey} />
       </div>
     );
   }
