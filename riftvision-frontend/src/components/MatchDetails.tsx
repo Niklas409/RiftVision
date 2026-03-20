@@ -27,24 +27,22 @@ function shortenPlayerId(playerId: string): string {
   return `${playerId.substring(0, 18)}...`;
 }
 
-export default function MatchDetails({ matchDetails, loading, error }: Props) {
-  if (loading) {
-    return <p>Match-Details werden geladen...</p>;
-  }
+type TeamSectionProps = {
+  title: string;
+  participants: MatchParticipant[];
+};
 
-  if (error) {
-    return <p style={{ color: "red" }}>Fehler: {error}</p>;
-  }
-
-  if (!matchDetails) {
-    return null;
-  }
-
+function TeamSection({ title, participants }: TeamSectionProps) {
   return (
-    <div style={{ marginTop: "12px", paddingTop: "12px" }}>
-      <h3>Participants</h3>
+    <div
+      style={{
+        flex: 1,
+        minWidth: "280px",
+      }}
+    >
+      <h4 style={{ marginBottom: "12px" }}>{title}</h4>
 
-      {matchDetails.participants.map((participant) => (
+      {participants.map((participant) => (
         <div
           key={participant.playerId}
           style={{
@@ -69,6 +67,40 @@ export default function MatchDetails({ matchDetails, loading, error }: Props) {
           </p>
         </div>
       ))}
+    </div>
+  );
+}
+
+export default function MatchDetails({ matchDetails, loading, error }: Props) {
+  if (loading) {
+    return <p>Match-Details werden geladen...</p>;
+  }
+
+  if (error) {
+    return <p style={{ color: "red" }}>Fehler: {error}</p>;
+  }
+
+  if (!matchDetails) {
+    return null;
+  }
+
+  const blueTeam = matchDetails.participants.slice(0, 5);
+  const redTeam = matchDetails.participants.slice(5, 10);
+
+  return (
+    <div style={{ marginTop: "12px", paddingTop: "12px" }}>
+      <h3>Participants</h3>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "16px",
+          flexWrap: "wrap",
+        }}
+      >
+        <TeamSection title="Team Blau" participants={blueTeam} />
+        <TeamSection title="Team Rot" participants={redTeam} />
+      </div>
     </div>
   );
 }
