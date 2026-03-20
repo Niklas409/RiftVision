@@ -64,7 +64,7 @@ function TeamSection({ title, participants, isWinner }: TeamSectionProps) {
             <strong>Champion:</strong> {participant.champion}
           </p>
           <p>
-            <strong>Player:</strong> {participant.playerName}
+            <strong>Spieler:</strong> {participant.playerName}
           </p>
           <p>
             <strong>KDA:</strong> {participant.kills}/{participant.deaths}/

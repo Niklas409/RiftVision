@@ -15,8 +15,8 @@
 - Phase 6.6 – Match Details Endpoint ✅
 - Phase 6.7 – Role Management (Admin) ✅
 - Phase 6.8 – Riot Account Linking System ✅
+- Phase 6.9 – Frontend Match Flow & Team Rendering ✅
 - Phase 7 – Production / Hardening ⏳
-- Frontend MVP – gestartet ⏳
 
 ---
 
@@ -37,6 +37,7 @@ Aktuell vorhanden:
 - Account-Linking-System für mehrere Riot-Accounts pro User
 - persönliche Match-Liste scoped auf verknüpfte Riot-Accounts
 - konsistente API-Response-Hülle und Exception Handling
+- Match-Participants mit `playerName` und `teamId` in der Match-Detail-Response
 
 ### Frontend
 
@@ -44,7 +45,14 @@ Aktuell vorhanden:
 - Register-View
 - Login-View
 - JWT-Speicherung im Local Storage
+- Logout-Flow
 - authentifizierte Match-Liste
+- verknüpfte Riot-Accounts anzeigen
+- Import-Flow im Frontend nutzbar
+- Match-Liste lädt nach Import automatisch neu
+- Match-Detail-View mit Participants
+- Team-Darstellung Blau/Rot
+- Anzeige von `playerName` statt nur Player-ID
 
 ---
 
@@ -399,23 +407,35 @@ Technische Änderungen:
 
 ---
 
-## Frontend MVP – gestartet
+## Phase 6.9 – Frontend Match Flow & Team Rendering
 
-Aktueller Stand:
+Abgeschlossen:
 
-- React + Vite Projekt angelegt
-- Login-Formular
-- Register-Formular
-- JWT im Local Storage
-- Logout-Flow
-- Match-Liste für eingeloggten User
+Ziel:
+Einen ersten echten End-to-End-Flow im Frontend bereitstellen: eingeloggter User sieht verknüpfte Accounts, kann Matches importieren, Matches abrufen und Match-Details mit Teams betrachten.
 
-Ziel des nächsten Frontend-Schritts:
+Frontend-Features:
 
-- verknüpfte Accounts anzeigen
-- Import-Flow im Frontend nutzbar machen
-- Match-Details-View bauen
-- später Notes und Tasks einbinden
+- `LinkedAccountsList` Komponente erstellt
+- verknüpfte Riot-Accounts über `GET /players` anzeigen
+- Import-Button pro verknüpftem Account
+- Riot-Import über Frontend triggerbar
+- Match-Liste aktualisiert sich nach Import automatisch
+- `MatchDetails` Komponente erstellt und aus `MatchList` ausgelagert
+- Match-Detail-Ansicht direkt unter einem Match einblendbar
+- Participants werden in Team Blau / Team Rot gruppiert
+- Anzeige von `playerName` statt nur kryptischer Player-ID
+
+Backend-Erweiterungen für diesen Schritt:
+
+- `playerName` in `MatchParticipantResponse` genutzt
+- `teamId` durch Backend-Pipeline durchgezogen
+- `teamId` in Riot DTO, internem Stats-DTO, Entity und Response verfügbar
+- Frontend kann Teams dadurch fachlich korrekt per `teamId` filtern statt nur per Listen-Slicing
+
+Ergebnis:
+
+RiftVision besitzt jetzt einen sichtbaren Nutzerfluss von Login → Linked Account → Import → Match-Liste → Match-Details → Teamdarstellung.
 
 ---
 
@@ -453,11 +473,10 @@ Request → JWT Filter → UserDetailsService → SecurityContext → Controller
 
 Sinnvolle nächste Schritte:
 
-1. Frontend für verknüpfte Accounts
-2. Import-Flow im Frontend
-3. Match-Detail-View
-4. Match-Import weiter härten / besser auf verknüpfte Accounts abstimmen
-5. später Production Readiness
+1. Match-Details weiter fachlich anreichern
+2. Import robuster machen / Fehlerfälle härten
+3. weiteres Frontend-Polishing nur dort, wo es Backend-Flows sichtbar macht
+4. später Production Readiness
 
 ---
 
@@ -470,6 +489,7 @@ RiftVision zeigt inzwischen praktische Arbeit mit:
 - relationaler Datenmodellierung
 - Coaching-Domain-Modell
 - Account-Linking-Architektur
-- sauberen REST APIs
-- Docker-Datenbank-Setup
-- React-Frontend-Basis
+- sauberem Match-Refactor
+- vollständigem Riot-Participant-Import
+- React-Frontend-Basis mit echtem Backend-Flow
+- End-to-End-Denken zwischen Domain, API und UI

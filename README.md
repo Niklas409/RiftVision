@@ -25,6 +25,7 @@ Statt nur rohe Statistiken anzuzeigen, soll die Plattform echte Workflows für S
 - mehrere Riot-Accounts pro User verknüpfen
 - Matchdaten über die Riot API importieren und dauerhaft speichern
 - persönliche Match-Historie anzeigen
+- Match-Details mit Teamansicht darstellen
 - Spieler einem Coach zuweisen
 - Coaching-Notizen zu konkreten Matches schreiben
 - Trainingsaufgaben erstellen und verfolgen
@@ -51,6 +52,7 @@ Das Backend ist bereits in einem starken MVP-Zustand und enthält aktuell:
 - Riot-API-Integration für Account-Lookup, Match-IDs, Match-Details und Import
 - PostgreSQL-Persistenz mit Spring Data JPA
 - globales Match-Modell mit `MatchEntity` und `MatchParticipantEntity`
+- Match-Participants mit `playerName` und `teamId` in der Detail-Response
 - Coach/Student-Beziehungsmodell
 - Match-Notes-System für Coaches
 - Task-System für Trainingsaufgaben
@@ -70,8 +72,14 @@ Aktuell vorhanden:
 - JWT-Speicherung im Local Storage
 - Logout-Flow
 - authentifizierte Match-Liste
+- Anzeige verknüpfter Riot-Accounts
+- Riot-Import-Flow direkt im Frontend
+- automatisches Refresh der Match-Liste nach Import
+- Match-Detail-View mit Participants
+- Team-Darstellung Blau/Rot im Match-Detail
+- Anzeige von `playerName` statt nur kryptischer Player-ID
 
-Damit ist RiftVision nicht mehr nur Backend-only. Der erste echte End-to-End-Flow existiert bereits.
+Damit ist RiftVision nicht mehr nur Backend-only. Es existiert bereits ein echter End-to-End-Flow von Login → Account-Linking → Import → Match-Liste → Match-Details.
 
 ---
 
@@ -96,11 +104,15 @@ Damit ist RiftVision nicht mehr nur Backend-only. Der erste echte End-to-End-Flo
 - Import aktueller Matches in PostgreSQL
 - persistente Player-Erstellung beim Import
 - vollständiger Import aller 10 Teilnehmer eines Matches
+- Speicherung von Team-Informationen (`teamId`) pro Participant
 
 ### Match-System
 
 - persönliche Match-Liste des eingeloggten Users
 - Match-Details mit allen Participants
+- Match-Participants inklusive `playerName`
+- Match-Participants inklusive `teamId`
+- Team-Darstellung Blau/Rot im Frontend
 - Player-Stats-Berechnung über importierte MatchParticipants
 - Refactor vom alten player-zentrierten Modell auf ein globales Multiplayer-Match-Modell
 
@@ -318,6 +330,13 @@ für das React/Vite-Frontend.
 docker compose up -d
 ```
 
+### Datenbank komplett resetten
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
 ### Backend starten
 
 Linux / macOS:
@@ -330,6 +349,14 @@ Windows:
 
 ```bash
 gradlew.bat bootRun
+```
+
+### Frontend starten
+
+```bash
+cd riftvision-frontend
+npm install
+npm run dev
 ```
 
 Backend läuft auf:
@@ -361,12 +388,13 @@ http://localhost:5173
 - Phase 6.6 – Match Details Endpoint
 - Phase 6.7 – Role Management (Admin)
 - Phase 6.8 – Riot Account Linking System
+- Phase 6.9 – Frontend Match Flow & Team Rendering
 
 ### In Arbeit
 
 - Frontend MVP
-- Dashboard / verknüpfte Accounts / Import-Flow
-- Match-Detail-View im Frontend
+- UX-Verbesserungen für Match- und Team-Darstellung
+- weiterer End-to-End-Flow zwischen Backend und Frontend
 
 ### Später geplant
 
