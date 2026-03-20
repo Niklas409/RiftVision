@@ -85,7 +85,8 @@ public class MatchService {
                     participant.getKills(),
                     participant.getDeaths(),
                     participant.getAssists(),
-                    participant.isWin()));
+                    participant.isWin(),
+                    participant.getTeamId()));
         }
         return new MatchDetailsResponse(match.getMatchId(),
                 match.getPlayedAt(),

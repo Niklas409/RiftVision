@@ -60,6 +60,7 @@ public class RiotImportService {
                 participant.getDeaths(),
                 participant.getAssists(),
                 participant.isWin(),
+                participant.getTeamId(),
                 Instant.ofEpochMilli(match.getInfo().getGameCreation()));
     }
 
@@ -132,7 +133,7 @@ public class RiotImportService {
     }
 
     private MatchParticipantEntity toMatchParticipantEntity(MatchEntity match, PlayerEntity player, PlayerMatchStatsResponse stats) {
-        return new MatchParticipantEntity(match, player, stats.getChampion(), stats.getKills(), stats.getDeaths(), stats.getAssists(), stats.isWin());
+        return new MatchParticipantEntity(match, player, stats.getChampion(), stats.getKills(), stats.getDeaths(), stats.getAssists(), stats.isWin(), stats.getTeamId());
     }
 
     private void importParticipants(MatchEntity matchEntity, RiotMatchResponse riotMatch) {
@@ -148,7 +149,8 @@ public class RiotImportService {
                     riotParticipantResponse.getKills(),
                     riotParticipantResponse.getDeaths(),
                     riotParticipantResponse.getAssists(),
-                    riotParticipantResponse.isWin());
+                    riotParticipantResponse.isWin(),
+                    riotParticipantResponse.getTeamId());
             matchParticipantRepository.save(participant);
         }
     }

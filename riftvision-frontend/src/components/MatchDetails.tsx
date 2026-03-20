@@ -1,10 +1,12 @@
 type MatchParticipant = {
   playerId: string;
+  playerName: string;
   champion: string;
   kills: number;
   deaths: number;
   assists: number;
   win: boolean;
+  teamId: number;
 };
 
 type MatchDetailsType = {
@@ -30,17 +32,23 @@ function shortenPlayerId(playerId: string): string {
 type TeamSectionProps = {
   title: string;
   participants: MatchParticipant[];
+  isWinner: boolean;
 };
 
-function TeamSection({ title, participants }: TeamSectionProps) {
+function TeamSection({ title, participants, isWinner }: TeamSectionProps) {
   return (
     <div
       style={{
         flex: 1,
         minWidth: "280px",
+        backgroundColor: isWinner ? "#e6ffed" : "#ffe6e6",
+        padding: "10px",
+        borderRadius: "8px",
       }}
     >
-      <h4 style={{ marginBottom: "12px" }}>{title}</h4>
+      <h4 style={{ marginBottom: "12px" }}>
+        {title} {isWinner ? "🏆" : ""}
+      </h4>
 
       {participants.map((participant) => (
         <div
@@ -56,7 +64,7 @@ function TeamSection({ title, participants }: TeamSectionProps) {
             <strong>Champion:</strong> {participant.champion}
           </p>
           <p>
-            <strong>Player ID:</strong> {shortenPlayerId(participant.playerId)}
+            <strong>Player:</strong> {participant.playerName}
           </p>
           <p>
             <strong>KDA:</strong> {participant.kills}/{participant.deaths}/
@@ -84,8 +92,16 @@ export default function MatchDetails({ matchDetails, loading, error }: Props) {
     return null;
   }
 
-  const blueTeam = matchDetails.participants.slice(0, 5);
-  const redTeam = matchDetails.participants.slice(5, 10);
+  const blueTeam = matchDetails.participants.filter(
+    (participant) => participant.teamId === 100,
+  );
+
+  const redTeam = matchDetails.participants.filter(
+    (participant) => participant.teamId === 200,
+  );
+
+  const blueTeamWon = blueTeam.some((p) => p.win);
+  const redTeamWon = redTeam.some((p) => p.win);
 
   return (
     <div style={{ marginTop: "12px", paddingTop: "12px" }}>
@@ -98,8 +114,16 @@ export default function MatchDetails({ matchDetails, loading, error }: Props) {
           flexWrap: "wrap",
         }}
       >
-        <TeamSection title="Team Blau" participants={blueTeam} />
-        <TeamSection title="Team Rot" participants={redTeam} />
+        <TeamSection
+          title="Team Blau"
+          participants={blueTeam}
+          isWinner={blueTeamWon}
+        />
+        <TeamSection
+          title="Team Rot"
+          participants={redTeam}
+          isWinner={redTeamWon}
+        />
       </div>
     </div>
   );

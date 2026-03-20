@@ -10,6 +10,7 @@ public class RiotParticipantResponse {
     private int deaths;
     private int assists;
     private boolean win;
+    private int teamId;
 
     public String getPuuid() {
         return puuid;
@@ -41,6 +42,10 @@ public class RiotParticipantResponse {
 
     public boolean isWin() {
         return win;
+    }
+
+    public int getTeamId() {
+        return teamId;
     }
 
     public void setPuuid(String puuid) {
@@ -75,4 +80,7 @@ public class RiotParticipantResponse {
         this.win = win;
     }
 
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
 }

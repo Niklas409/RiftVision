@@ -38,10 +38,13 @@ public class MatchParticipantEntity {
     @Column(nullable=false)
     private boolean win;
 
+    @Column(nullable = false)
+    private int teamId;
+
     protected MatchParticipantEntity() {
     }
 
-    public MatchParticipantEntity(MatchEntity match, PlayerEntity player, String champion, int kills, int deaths, int assists, boolean win) {
+    public MatchParticipantEntity(MatchEntity match, PlayerEntity player, String champion, int kills, int deaths, int assists, boolean win, int teamId) {
         this.match = match;
         this.player = player;
         this.champion = champion;
@@ -49,6 +52,7 @@ public class MatchParticipantEntity {
         this.deaths = deaths;
         this.assists = assists;
         this.win = win;
+        this.teamId = teamId;
     }
 
     public Long getId() {
@@ -83,6 +87,10 @@ public class MatchParticipantEntity {
         return win;
     }
 
+    public int getTeamId() {
+        return teamId;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -115,4 +123,7 @@ public class MatchParticipantEntity {
         this.win = win;
     }
 
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
+    }
 }

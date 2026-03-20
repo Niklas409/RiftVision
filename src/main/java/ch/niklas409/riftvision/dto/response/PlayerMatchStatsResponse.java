@@ -10,15 +10,17 @@ public class PlayerMatchStatsResponse {
     private int deaths;
     private int assists;
     private boolean win;
+    private int teamId;
     private Instant playedAt;
 
-    public PlayerMatchStatsResponse(String matchId, String champion, int kills, int deaths, int assists, boolean win, Instant playedAt) {
+    public PlayerMatchStatsResponse(String matchId, String champion, int kills, int deaths, int assists, boolean win, int teamId, Instant playedAt) {
         this.matchId = matchId;
         this.champion = champion;
         this.kills = kills;
         this.deaths = deaths;
         this.assists = assists;
         this.win = win;
+        this.teamId = teamId;
         this.playedAt = playedAt;
     }
 
@@ -44,6 +46,10 @@ public class PlayerMatchStatsResponse {
 
     public boolean isWin() {
         return win;
+    }
+
+    public int getTeamId() {
+        return teamId;
     }
 
     public Instant getPlayedAt() {
@@ -72,6 +78,10 @@ public class PlayerMatchStatsResponse {
 
     public void setWin(boolean win) {
         this.win = win;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
     public void setPlayedAt(Instant playedAt) {

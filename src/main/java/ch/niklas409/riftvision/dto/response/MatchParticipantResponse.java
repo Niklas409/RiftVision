@@ -9,8 +9,9 @@ public class MatchParticipantResponse {
     private int deaths;
     private int assists;
     private boolean win;
+    private int teamId;
 
-    public MatchParticipantResponse(String playerId, String playerName, String champion, int kills, int deaths, int assists, boolean win) {
+    public MatchParticipantResponse(String playerId, String playerName, String champion, int kills, int deaths, int assists, boolean win, int teamId) {
         this.playerId = playerId;
         this.playerName = playerName;
         this.champion = champion;
@@ -18,6 +19,7 @@ public class MatchParticipantResponse {
         this.deaths = deaths;
         this.assists = assists;
         this.win = win;
+        this.teamId = teamId;
     }
 
     public String getPlayerId() {
@@ -48,6 +50,10 @@ public class MatchParticipantResponse {
         return win;
     }
 
+    public int getTeamId() {
+        return teamId;
+    }
+
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
     }
@@ -74,5 +80,9 @@ public class MatchParticipantResponse {
 
     public void setWin(boolean win) {
         this.win = win;
+    }
+
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 }
